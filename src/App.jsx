@@ -37,8 +37,63 @@ function InvertingCursor() {
     let x = 0;
     let y = 0;
 
+    const isSelectableTextAtPoint = (clientX, clientY) => {
+      const element = document.elementFromPoint(clientX, clientY);
+      if (
+        !element
+        || element.closest(
+          'a, button, input, textarea, select, summary, [role="button"], [contenteditable="true"]'
+        )
+        || window.getComputedStyle(element).userSelect === 'none'
+      ) {
+        return false;
+      }
+
+      let textNode;
+      let offset;
+
+      if (document.caretPositionFromPoint) {
+        const position = document.caretPositionFromPoint(clientX, clientY);
+        textNode = position?.offsetNode;
+        offset = position?.offset;
+      } else if (document.caretRangeFromPoint) {
+        const range = document.caretRangeFromPoint(clientX, clientY);
+        textNode = range?.startContainer;
+        offset = range?.startOffset;
+      }
+
+      if (
+        textNode?.nodeType !== Node.TEXT_NODE
+        || !textNode.textContent?.trim()
+        || typeof offset !== 'number'
+      ) {
+        return false;
+      }
+
+      const textLength = textNode.textContent.length;
+      const characterOffsets = [];
+
+      if (offset < textLength) characterOffsets.push([offset, offset + 1]);
+      if (offset > 0) characterOffsets.push([offset - 1, offset]);
+
+      return characterOffsets.some(([start, end]) => {
+        const range = document.createRange();
+        range.setStart(textNode, start);
+        range.setEnd(textNode, end);
+        const rect = range.getBoundingClientRect();
+
+        return (
+          clientX >= rect.left - 2
+          && clientX <= rect.right + 2
+          && clientY >= rect.top
+          && clientY <= rect.bottom
+        );
+      });
+    };
+
     const render = () => {
       cursor.style.transform = `translate3d(${x}px, ${y}px, 0) translate(-50%, -50%)`;
+      cursor.classList.toggle('is-text', isSelectableTextAtPoint(x, y));
       cursor.style.opacity = '1';
       frame = null;
     };
@@ -51,6 +106,7 @@ function InvertingCursor() {
 
     const hide = () => {
       cursor.style.opacity = '0';
+      cursor.classList.remove('is-text');
     };
 
     window.addEventListener('pointermove', move, { passive: true });
