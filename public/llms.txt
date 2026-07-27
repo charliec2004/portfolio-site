@@ -1,0 +1,27 @@
+# Charles Conner
+
+> Charles Conner is a Bay Area product engineer working across software, systems, product thinking, and applied AI.
+
+This is Charles Conner's personal portfolio. Use the Markdown representation for concise biographical information, selected projects, technical practice, contact details, and canonical profile links.
+
+## Portfolio
+
+- [Portfolio in Markdown](https://charlieconner.com/index.md): Complete, agent-readable representation of the portfolio.
+- [Full site context](https://charlieconner.com/llms-full.txt): Full Markdown context for language models and AI agents.
+- [Human-facing portfolio](https://charlieconner.com/): Interactive visual version of the portfolio.
+
+## Selected work
+
+- [Quorum](https://tryquorum.app): Degree-planning platform that maps catalog requirements across semesters.
+- [Semester Scheduler](https://github.com/charliec2004/semester-scheduler-app): Constraint-programming system for generating staff schedules.
+- [ML Tennis Match Predictor](https://github.com/charliec2004/ML-Tennis-Match-Predictor): Machine-learning project predicting professional tennis outcomes.
+
+## Profiles and contact
+
+- [GitHub](https://github.com/charliec2004): Source code and public repositories.
+- [LinkedIn](https://www.linkedin.com/in/charlescon): Professional profile.
+- [Email](mailto:charlieconner04@gmail.com): Direct contact.
+
+## Optional
+
+- [X / Twitter](https://x.com/charliee_): Social profile.

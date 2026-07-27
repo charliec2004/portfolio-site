@@ -48,7 +48,7 @@ const ITEMS = [
   },
   {
     key: 'linkedin',
-    href: 'https://linkedin.com/in/charles-conner04',
+    href: 'https://www.linkedin.com/in/charlescon',
     external: true,
     tooltip: 'LinkedIn',
     ariaLabel: 'LinkedIn',

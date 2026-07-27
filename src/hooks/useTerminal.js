@@ -51,7 +51,7 @@ const COMMANDS = new Map([
   }],
 
   ['linkedin', () => {
-    window.open('https://linkedin.com/in/charles-conner04', '_blank', 'noopener');
+    window.open('https://www.linkedin.com/in/charlescon', '_blank', 'noopener');
     return 'Opening LinkedIn...';
   }],
 
