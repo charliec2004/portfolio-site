@@ -1,6 +1,6 @@
 const AGENT_LINKS = [
-  '</llms.txt>; rel="llms-txt"; type="text/plain"',
-  '</index.md>; rel="alternate"; type="text/markdown"',
+  '</llms.txt>; rel="describedby"; type="text/plain"',
+  '</index.md>; rel="alternate describedby"; type="text/markdown"',
   '</sitemap.xml>; rel="sitemap"; type="application/xml"',
 ].join(', ');
 
