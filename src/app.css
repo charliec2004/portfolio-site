@@ -186,7 +186,6 @@ a {
   padding: 0;
   border: 0;
   background: transparent;
-  cursor: pointer;
 }
 
 .theme-toggle__icon {
@@ -1018,11 +1017,10 @@ a:hover > .external-arrow {
 }
 
 @media (hover: hover) and (pointer: fine) {
-  html,
-  body,
-  a,
-  button {
-    cursor: none;
+  *,
+  *::before,
+  *::after {
+    cursor: none !important;
   }
 }
 
