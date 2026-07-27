@@ -311,7 +311,7 @@ function App() {
 
         <section className="contact section-shell" id="contact" aria-labelledby="contact-title">
           <p className="eyebrow">Have a project in mind?</p>
-          <h2 id="contact-title">Let’s make it<br />make sense.</h2>
+          <h2 id="contact-title">Let’s build the<br />right thing.</h2>
           <button className="email-button" type="button" onClick={copyEmail}>
             <span>{copied ? 'Copied to clipboard' : 'charlieconner04@gmail.com'}</span>
             <span aria-hidden="true">{copied ? '✓' : 'Copy'}</span>
