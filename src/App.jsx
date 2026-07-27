@@ -191,7 +191,7 @@ function App() {
       <InvertingCursor />
 
       <header className="site-header">
-        <a className="wordmark" href="#top" aria-label="Charles Conner, home" onClick={closeMenu}>
+        <a className="wordmark" href="/" aria-label="Charles Conner, reload home">
           Charles Conner
         </a>
 
