@@ -41,6 +41,7 @@ function InvertingCursor() {
     let x = 0;
     let y = 0;
     let hasPointer = false;
+    const interactiveSelector = 'a, button, summary, [role="button"]';
 
     const isSelectableTextAtPoint = (clientX, clientY, element) => {
       if (
@@ -100,11 +101,15 @@ function InvertingCursor() {
       if (!hasPointer) return;
 
       const element = document.elementFromPoint(x, y);
-      const isButton = Boolean(element?.closest('button'));
+      const state = element?.closest(interactiveSelector)
+        ? 'interactive'
+        : isSelectableTextAtPoint(x, y, element)
+          ? 'text'
+          : 'default';
 
       cursor.style.transform = `translate3d(${x}px, ${y}px, 0) translate(-50%, -50%)`;
-      cursor.classList.toggle('is-button', isButton);
-      cursor.classList.toggle('is-text', !isButton && isSelectableTextAtPoint(x, y, element));
+      cursor.classList.toggle('is-interactive', state === 'interactive');
+      cursor.classList.toggle('is-text', state === 'text');
       cursor.style.opacity = '1';
     };
 
@@ -122,11 +127,11 @@ function InvertingCursor() {
     const hide = () => {
       hasPointer = false;
       cursor.style.opacity = '0';
-      cursor.classList.remove('is-text', 'is-button', 'is-pressed');
+      cursor.classList.remove('is-text', 'is-interactive', 'is-pressed');
     };
 
     const press = (event) => {
-      if (event.target instanceof Element && event.target.closest('button')) {
+      if (event.target?.closest?.(interactiveSelector)) {
         cursor.classList.add('is-pressed');
       }
     };

@@ -118,11 +118,11 @@ a {
   transform: scale(.375, 2.25);
 }
 
-.inverting-cursor.is-button .inverting-cursor__shape {
+.inverting-cursor.is-interactive .inverting-cursor__shape {
   transform: scale(1.3);
 }
 
-.inverting-cursor.is-button.is-pressed .inverting-cursor__shape {
+.inverting-cursor.is-interactive.is-pressed .inverting-cursor__shape {
   border-radius: 44%;
   transform: scale(1.55, .78);
   transition-duration: 90ms;
