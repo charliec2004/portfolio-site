@@ -67,7 +67,7 @@ void main() {
     smoothstep(0.02, 0.18, uv.y) *
     smoothstep(0.01, 0.24, 1.0 - uv.y);
   float centerRestraint = mix(0.62, 1.0, smoothstep(0.18, 0.82, depth));
-  float alpha = dots * edgeFade * centerRestraint * 0.25;
+  float alpha = dots * edgeFade * centerRestraint * 0.28;
 
   // Render an opaque surface that matches the page. This avoids the
   // browser-specific translucent WebGL compositing paths entirely.
