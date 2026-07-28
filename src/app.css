@@ -384,8 +384,26 @@ a {
 
 .external-arrow {
   display: inline-block;
+  width: 0.75em;
+  height: 0.75em;
   margin-left: 0.35em;
   transition: transform 180ms ease;
+}
+
+.external-arrow svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+.external-arrow path {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 0.9;
+  stroke-linecap: square;
+  stroke-linejoin: miter;
+  vector-effect: non-scaling-stroke;
 }
 
 a:hover > .external-arrow {
