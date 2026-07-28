@@ -173,7 +173,10 @@ a {
 }
 
 .wordmark {
+  position: relative;
   width: max-content;
+  margin: -12px;
+  padding: 12px;
   font-size: 12px;
   font-weight: 600;
   letter-spacing: -0.01em;
@@ -190,6 +193,11 @@ a {
   position: relative;
   font-size: 12px;
   font-weight: 500;
+}
+
+.site-nav a {
+  margin: -12px;
+  padding: 12px;
 }
 
 .site-nav a::after,
@@ -212,12 +220,19 @@ a {
   transform-origin: left;
 }
 
+.site-nav a::after {
+  right: 12px;
+  bottom: 7px;
+  left: 12px;
+}
+
 .theme-toggle {
   justify-self: end;
   display: flex;
   align-items: center;
   gap: 8px;
-  padding: 0;
+  margin: -12px;
+  padding: 12px;
   border: 0;
   background: transparent;
 }
