@@ -129,7 +129,7 @@ a {
   transform: translate(-50%, -50%) scale(1.3);
 }
 
-.inverting-cursor.is-interactive.is-pressed .inverting-cursor__shape {
+.inverting-cursor.is-pressed:not(.is-text) .inverting-cursor__shape {
   border-radius: 44%;
   transform: translate(-50%, -50%) scale(1.55, .78);
   transition-duration: 90ms;
@@ -240,12 +240,56 @@ a {
 }
 
 .hero {
+  position: relative;
   min-height: 100svh;
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
   padding-top: 140px;
   padding-bottom: clamp(38px, 6vh, 72px);
+}
+
+.hero > :not(.point-wave-field) {
+  position: relative;
+  z-index: 1;
+}
+
+.point-wave-field {
+  position: absolute;
+  z-index: 0;
+  top: 108px;
+  right: 0;
+  left: 0;
+  height: clamp(210px, 34vh, 390px);
+  overflow: hidden;
+  pointer-events: none;
+  opacity: 0.72;
+  mix-blend-mode: difference;
+  contain: strict;
+  -webkit-mask-image: linear-gradient(
+    to bottom,
+    transparent 0,
+    #000 14%,
+    #000 68%,
+    transparent 100%
+  );
+  mask-image: linear-gradient(
+    to bottom,
+    transparent 0,
+    #000 14%,
+    #000 68%,
+    transparent 100%
+  );
+}
+
+.point-wave-field canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+[data-theme="dark"] .point-wave-field {
+  opacity: 0.58;
 }
 
 .eyebrow {
@@ -942,6 +986,16 @@ a:hover > .external-arrow {
     padding-bottom: 26px;
   }
 
+  .point-wave-field {
+    top: 80px;
+    height: clamp(190px, 31vh, 290px);
+    opacity: 0.58;
+  }
+
+  [data-theme="dark"] .point-wave-field {
+    opacity: 0.48;
+  }
+
   .hero__meta {
     margin-bottom: 44px;
   }
@@ -1087,5 +1141,9 @@ a:hover > .external-arrow {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
+  }
+
+  .point-wave-field {
+    opacity: 0.44;
   }
 }

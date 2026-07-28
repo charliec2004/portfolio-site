@@ -1,6 +1,9 @@
 import { useEffect, useRef, useState } from 'react';
 import charliePortrait from './assets/images/charlie-clean.webp';
+import PointWaveField from './components/PointWaveField';
 import { PROJECTS } from './data/projects';
+
+const ENABLE_POINT_WAVE_FIELD = true;
 
 const SOCIALS = [
   { label: 'GitHub', href: 'https://github.com/charliec2004' },
@@ -189,8 +192,8 @@ function InvertingCursor() {
       cursor.classList.remove('is-text', 'is-interactive', 'is-pressed');
     };
 
-    const press = (event) => {
-      if (event.target?.closest?.(interactiveSelector)) {
+    const press = () => {
+      if (!cursor.classList.contains('is-text')) {
         cursor.classList.add('is-pressed');
       }
     };
@@ -380,6 +383,7 @@ function App() {
 
       <main id="top">
         <section className="hero section-shell" aria-labelledby="hero-title">
+          {ENABLE_POINT_WAVE_FIELD && <PointWaveField />}
           <div className="hero__meta eyebrow">
             <span>Product engineer</span>
             <span>Bay Area</span>
