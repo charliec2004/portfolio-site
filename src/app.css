@@ -708,7 +708,7 @@ a:hover > .external-arrow {
 }
 
 .ball--one { top: 24%; left: 28%; }
-.ball--two { right: 21%; bottom: 24%; }
+.ball--two { right: 18%; bottom: 42%; }
 .project__visual-link:hover .ball--one { transform: translate(42px, 50px); }
 .project__visual-link:hover .ball--two { transform: translate(-34px, -30px); }
 
