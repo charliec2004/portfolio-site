@@ -5,6 +5,17 @@ import { PROJECTS } from './data/projects';
 
 const ENABLE_POINT_WAVE_FIELD = true;
 
+function getInitialTheme() {
+  try {
+    const saved = window.localStorage.getItem('portfolio-theme');
+    if (saved === 'light' || saved === 'dark') return saved;
+  } catch {
+    // Safari can deny storage access in private or restricted browsing modes.
+  }
+
+  return window.matchMedia?.('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+}
+
 const SOCIALS = [
   { label: 'GitHub', href: 'https://github.com/charliec2004' },
   { label: 'LinkedIn', href: 'https://www.linkedin.com/in/charlescon' },
@@ -287,18 +298,18 @@ function ProjectVisual({ index }) {
 }
 
 function App() {
-  const [theme, setTheme] = useState(() => {
-    const saved = localStorage.getItem('portfolio-theme');
-    if (saved === 'light' || saved === 'dark') return saved;
-    return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-  });
+  const [theme, setTheme] = useState(getInitialTheme);
   const [copied, setCopied] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const copyTimer = useRef(null);
 
   useEffect(() => {
     document.documentElement.dataset.theme = theme;
-    localStorage.setItem('portfolio-theme', theme);
+    try {
+      window.localStorage.setItem('portfolio-theme', theme);
+    } catch {
+      // The selected theme still applies for this session when storage is unavailable.
+    }
     document.querySelector('meta[name="theme-color"]')?.setAttribute(
       'content',
       theme === 'dark' ? '#0a0a0a' : '#f4f4f0'
@@ -383,7 +394,7 @@ function App() {
 
       <main id="top">
         <section className="hero section-shell" aria-labelledby="hero-title">
-          {ENABLE_POINT_WAVE_FIELD && <PointWaveField />}
+          {ENABLE_POINT_WAVE_FIELD && <PointWaveField theme={theme} />}
           <div className="hero__meta eyebrow">
             <span>Product engineer</span>
             <span>Bay Area</span>

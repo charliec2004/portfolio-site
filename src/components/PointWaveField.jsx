@@ -15,6 +15,7 @@ uniform vec2 u_mouse;
 uniform float u_mouse_strength;
 uniform float u_time;
 uniform vec3 u_color;
+uniform vec3 u_background;
 
 out vec4 outColor;
 
@@ -68,7 +69,9 @@ void main() {
   float centerRestraint = mix(0.62, 1.0, smoothstep(0.18, 0.82, depth));
   float alpha = dots * edgeFade * centerRestraint * 0.25;
 
-  outColor = vec4(u_color, alpha);
+  // Render an opaque surface that matches the page. This avoids the
+  // browser-specific translucent WebGL compositing paths entirely.
+  outColor = vec4(mix(u_background, u_color, alpha), 1.0);
 }`;
 
 function createShader(gl, type, source) {
@@ -105,29 +108,40 @@ function createProgram(gl) {
   return program;
 }
 
-export default function PointWaveField() {
+export default function PointWaveField({ theme }) {
   const canvasRef = useRef(null);
 
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return undefined;
 
-    const gl = canvas.getContext('webgl2', {
-      alpha: true,
-      antialias: false,
-      depth: false,
-      powerPreference: 'high-performance',
-      premultipliedAlpha: false,
-      preserveDrawingBuffer: false,
-      stencil: false,
-    });
+    let gl;
+    try {
+      gl = canvas.getContext('webgl2', {
+        alpha: false,
+        antialias: false,
+        depth: false,
+        preserveDrawingBuffer: false,
+        stencil: false,
+      });
+    } catch {
+      canvas.hidden = true;
+      return undefined;
+    }
 
     if (!gl) {
       canvas.hidden = true;
       return undefined;
     }
 
-    const program = createProgram(gl);
+    let program;
+    try {
+      program = createProgram(gl);
+    } catch {
+      canvas.hidden = true;
+      return undefined;
+    }
+
     if (!program) {
       canvas.hidden = true;
       return undefined;
@@ -147,6 +161,7 @@ export default function PointWaveField() {
     const mouseStrengthLocation = gl.getUniformLocation(program, 'u_mouse_strength');
     const timeLocation = gl.getUniformLocation(program, 'u_time');
     const colorLocation = gl.getUniformLocation(program, 'u_color');
+    const backgroundLocation = gl.getUniformLocation(program, 'u_background');
 
     gl.useProgram(program);
     gl.enableVertexAttribArray(positionLocation);
@@ -171,7 +186,15 @@ export default function PointWaveField() {
 
     const updateColor = () => {
       gl.useProgram(program);
-      gl.uniform3f(colorLocation, 1, 1, 1);
+      if (theme === 'dark') {
+        gl.uniform3f(colorLocation, 0.945, 0.945, 0.929);
+        gl.uniform3f(backgroundLocation, 0.039, 0.039, 0.039);
+        gl.clearColor(0.039, 0.039, 0.039, 1);
+      } else {
+        gl.uniform3f(colorLocation, 0.039, 0.039, 0.039);
+        gl.uniform3f(backgroundLocation, 0.957, 0.957, 0.941);
+        gl.clearColor(0.957, 0.957, 0.941, 1);
+      }
     };
 
     const resize = () => {
@@ -184,9 +207,10 @@ export default function PointWaveField() {
       if (canvas.width !== displayWidth || canvas.height !== displayHeight) {
         canvas.width = displayWidth;
         canvas.height = displayHeight;
-        gl.viewport(0, 0, displayWidth, displayHeight);
-        gl.uniform2f(resolutionLocation, displayWidth, displayHeight);
       }
+
+      gl.viewport(0, 0, displayWidth, displayHeight);
+      gl.uniform2f(resolutionLocation, displayWidth, displayHeight);
     };
 
     const draw = (now = performance.now()) => {
@@ -253,38 +277,53 @@ export default function PointWaveField() {
     };
 
     const onMotionChange = () => requestDraw();
-    const resizeObserver = new ResizeObserver(requestDraw);
-    const intersectionObserver = new IntersectionObserver(([entry]) => {
-      isIntersecting = entry.isIntersecting;
-      if (isIntersecting) {
-        requestDraw();
-      } else if (animationFrame !== null) {
-        window.cancelAnimationFrame(animationFrame);
-        animationFrame = null;
-      }
-    });
-    resizeObserver.observe(canvas);
-    intersectionObserver.observe(canvas);
+    const resizeObserver = typeof ResizeObserver === 'function'
+      ? new ResizeObserver(requestDraw)
+      : null;
+    const intersectionObserver = typeof IntersectionObserver === 'function'
+      ? new IntersectionObserver(([entry]) => {
+        isIntersecting = entry.isIntersecting;
+        if (isIntersecting) {
+          requestDraw();
+        } else if (animationFrame !== null) {
+          window.cancelAnimationFrame(animationFrame);
+          animationFrame = null;
+        }
+      })
+      : null;
+
+    resizeObserver?.observe(canvas);
+    intersectionObserver?.observe(canvas);
     window.addEventListener('pointermove', onPointerMove, { passive: true });
+    window.addEventListener('resize', requestDraw, { passive: true });
     document.documentElement.addEventListener('mouseleave', onPointerLeave);
     document.addEventListener('visibilitychange', onVisibilityChange);
-    reducedMotion.addEventListener('change', onMotionChange);
+    if (typeof reducedMotion.addEventListener === 'function') {
+      reducedMotion.addEventListener('change', onMotionChange);
+    } else {
+      reducedMotion.addListener?.(onMotionChange);
+    }
 
     updateColor();
     requestDraw();
 
     return () => {
       if (animationFrame !== null) window.cancelAnimationFrame(animationFrame);
-      resizeObserver.disconnect();
-      intersectionObserver.disconnect();
+      resizeObserver?.disconnect();
+      intersectionObserver?.disconnect();
       window.removeEventListener('pointermove', onPointerMove);
+      window.removeEventListener('resize', requestDraw);
       document.documentElement.removeEventListener('mouseleave', onPointerLeave);
       document.removeEventListener('visibilitychange', onVisibilityChange);
-      reducedMotion.removeEventListener('change', onMotionChange);
+      if (typeof reducedMotion.removeEventListener === 'function') {
+        reducedMotion.removeEventListener('change', onMotionChange);
+      } else {
+        reducedMotion.removeListener?.(onMotionChange);
+      }
       gl.deleteBuffer(positionBuffer);
       gl.deleteProgram(program);
     };
-  }, []);
+  }, [theme]);
 
   return (
     <div className="point-wave-field" aria-hidden="true">

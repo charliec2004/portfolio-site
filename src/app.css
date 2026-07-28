@@ -300,11 +300,6 @@ a {
   display: block;
   width: 100%;
   height: 100%;
-  filter: invert(1);
-}
-
-[data-theme="dark"] .point-wave-field canvas {
-  filter: none;
 }
 
 [data-theme="dark"] .point-wave-field {
