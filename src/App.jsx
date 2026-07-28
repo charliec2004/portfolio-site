@@ -42,14 +42,56 @@ function InvertingCursor() {
     let y = 0;
     let hasPointer = false;
     const interactiveSelector = 'a, button, summary, [role="button"]';
+    const metricsContext = document.createElement('canvas').getContext('2d');
+    const metricsCache = new Map();
+
+    const getGlyphMetrics = (style, character) => {
+      if (!metricsContext) return null;
+
+      const renderedCharacter = style.textTransform === 'uppercase'
+        ? character.toLocaleUpperCase()
+        : style.textTransform === 'lowercase'
+          ? character.toLocaleLowerCase()
+          : character;
+      const font = [
+        style.fontStyle,
+        style.fontVariant,
+        style.fontWeight,
+        style.fontSize,
+        style.fontFamily,
+      ].join(' ');
+      const cacheKey = `${font}\u0000${renderedCharacter}`;
+
+      if (metricsCache.has(cacheKey)) return metricsCache.get(cacheKey);
+
+      metricsContext.font = font;
+      const glyph = metricsContext.measureText(renderedCharacter);
+      const fontBox = metricsContext.measureText('Hg');
+      const fontSize = Number.parseFloat(style.fontSize) || 16;
+      const metrics = {
+        ascent: glyph.actualBoundingBoxAscent || fontSize * 0.72,
+        descent: glyph.actualBoundingBoxDescent || fontSize * 0.18,
+        fontAscent: fontBox.fontBoundingBoxAscent
+          || fontBox.actualBoundingBoxAscent
+          || fontSize * 0.8,
+        fontDescent: fontBox.fontBoundingBoxDescent
+          || fontBox.actualBoundingBoxDescent
+          || fontSize * 0.2,
+      };
+
+      metricsCache.set(cacheKey, metrics);
+      return metrics;
+    };
 
     const isSelectableTextAtPoint = (clientX, clientY, element) => {
+      const elementStyle = element ? window.getComputedStyle(element) : null;
+
       if (
         !element
         || element.closest(
           'a, button, input, textarea, select, summary, [role="button"], [contenteditable="true"]'
         )
-        || window.getComputedStyle(element).userSelect === 'none'
+        || elementStyle?.userSelect === 'none'
       ) {
         return false;
       }
@@ -82,16 +124,33 @@ function InvertingCursor() {
       if (offset > 0) characterOffsets.push([offset - 1, offset]);
 
       return characterOffsets.some(([start, end]) => {
+        const character = textNode.textContent.slice(start, end);
+        if (!character.trim()) return false;
+
         const range = document.createRange();
         range.setStart(textNode, start);
         range.setEnd(textNode, end);
         const rect = range.getBoundingClientRect();
+        const textElement = textNode.parentElement || element;
+        const textStyle = window.getComputedStyle(textElement);
+        const metrics = getGlyphMetrics(textStyle, character);
+
+        if (!metrics) return false;
+
+        const fontBoxHeight = metrics.fontAscent + metrics.fontDescent;
+        const baseline = (
+          rect.top
+          + ((rect.height - fontBoxHeight) / 2)
+          + metrics.fontAscent
+        );
+        const visualTop = baseline - metrics.ascent;
+        const visualBottom = baseline + metrics.descent;
 
         return (
           clientX >= rect.left - 2
           && clientX <= rect.right + 2
-          && clientY >= rect.top
-          && clientY <= rect.bottom
+          && clientY >= visualTop - 2
+          && clientY <= visualBottom + 2
         );
       });
     };
