@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import charliePortrait from './assets/images/charlie-clean.webp';
+import charliePortrait from './assets/images/charlie-clean.jpg';
 import PointWaveField from './components/PointWaveField';
 import { PROJECTS } from './data/projects';
 
