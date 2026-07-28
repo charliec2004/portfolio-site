@@ -42,8 +42,7 @@ function InvertingCursor() {
     let y = 0;
     let hasPointer = false;
 
-    const isSelectableTextAtPoint = (clientX, clientY) => {
-      const element = document.elementFromPoint(clientX, clientY);
+    const isSelectableTextAtPoint = (clientX, clientY, element) => {
       if (
         !element
         || element.closest(
@@ -100,8 +99,12 @@ function InvertingCursor() {
       frame = null;
       if (!hasPointer) return;
 
+      const element = document.elementFromPoint(x, y);
+      const isButton = Boolean(element?.closest('button'));
+
       cursor.style.transform = `translate3d(${x}px, ${y}px, 0) translate(-50%, -50%)`;
-      cursor.classList.toggle('is-text', isSelectableTextAtPoint(x, y));
+      cursor.classList.toggle('is-button', isButton);
+      cursor.classList.toggle('is-text', !isButton && isSelectableTextAtPoint(x, y, element));
       cursor.style.opacity = '1';
     };
 
@@ -119,10 +122,21 @@ function InvertingCursor() {
     const hide = () => {
       hasPointer = false;
       cursor.style.opacity = '0';
-      cursor.classList.remove('is-text');
+      cursor.classList.remove('is-text', 'is-button', 'is-pressed');
     };
 
+    const press = (event) => {
+      if (event.target instanceof Element && event.target.closest('button')) {
+        cursor.classList.add('is-pressed');
+      }
+    };
+
+    const release = () => cursor.classList.remove('is-pressed');
+
     window.addEventListener('pointermove', move, { passive: true });
+    window.addEventListener('pointerdown', press, { passive: true });
+    window.addEventListener('pointerup', release, { passive: true });
+    window.addEventListener('pointercancel', release, { passive: true });
     window.addEventListener('scroll', scheduleRender, { passive: true });
     window.addEventListener('blur', hide);
     document.documentElement.addEventListener('mouseleave', hide);
@@ -130,13 +144,20 @@ function InvertingCursor() {
     return () => {
       if (frame !== null) window.cancelAnimationFrame(frame);
       window.removeEventListener('pointermove', move);
+      window.removeEventListener('pointerdown', press);
+      window.removeEventListener('pointerup', release);
+      window.removeEventListener('pointercancel', release);
       window.removeEventListener('scroll', scheduleRender);
       window.removeEventListener('blur', hide);
       document.documentElement.removeEventListener('mouseleave', hide);
     };
   }, []);
 
-  return <div ref={cursorRef} className="inverting-cursor" aria-hidden="true" />;
+  return (
+    <div ref={cursorRef} className="inverting-cursor" aria-hidden="true">
+      <i className="inverting-cursor__shape" />
+    </div>
+  );
 }
 
 function ProjectVisual({ index }) {
