@@ -36,6 +36,7 @@ function InvertingCursor() {
     let frame = null;
     let x = 0;
     let y = 0;
+    let hasPointer = false;
 
     const isSelectableTextAtPoint = (clientX, clientY) => {
       const element = document.elementFromPoint(clientX, clientY);
@@ -92,30 +93,40 @@ function InvertingCursor() {
     };
 
     const render = () => {
+      frame = null;
+      if (!hasPointer) return;
+
       cursor.style.transform = `translate3d(${x}px, ${y}px, 0) translate(-50%, -50%)`;
       cursor.classList.toggle('is-text', isSelectableTextAtPoint(x, y));
       cursor.style.opacity = '1';
-      frame = null;
+    };
+
+    const scheduleRender = () => {
+      if (frame === null) frame = window.requestAnimationFrame(render);
     };
 
     const move = (event) => {
       x = event.clientX;
       y = event.clientY;
-      if (frame === null) frame = window.requestAnimationFrame(render);
+      hasPointer = true;
+      scheduleRender();
     };
 
     const hide = () => {
+      hasPointer = false;
       cursor.style.opacity = '0';
       cursor.classList.remove('is-text');
     };
 
     window.addEventListener('pointermove', move, { passive: true });
+    window.addEventListener('scroll', scheduleRender, { passive: true });
     window.addEventListener('blur', hide);
     document.documentElement.addEventListener('mouseleave', hide);
 
     return () => {
       if (frame !== null) window.cancelAnimationFrame(frame);
       window.removeEventListener('pointermove', move);
+      window.removeEventListener('scroll', scheduleRender);
       window.removeEventListener('blur', hide);
       document.documentElement.removeEventListener('mouseleave', hide);
     };
