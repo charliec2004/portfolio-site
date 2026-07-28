@@ -431,7 +431,16 @@ function App() {
                 <div className="project__number" aria-hidden="true">0{index + 1}</div>
                 <div className="project__copy">
                   <div className="project__title-row">
-                    <h3>{project.name}</h3>
+                    <h3>
+                      <a
+                        className="project__title-link"
+                        href={project.url}
+                        target="_blank"
+                        rel="noreferrer"
+                      >
+                        {project.name}
+                      </a>
+                    </h3>
                     <ExternalLink href={project.url} className="project__link">
                       View project
                     </ExternalLink>

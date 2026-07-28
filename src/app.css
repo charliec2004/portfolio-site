@@ -455,6 +455,10 @@ a {
   letter-spacing: -0.06em;
 }
 
+.project__title-link {
+  display: inline-block;
+}
+
 .project__link {
   display: none;
 }
