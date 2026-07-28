@@ -129,6 +129,11 @@ a {
   transform: translate(-50%, -50%) scale(1.3);
 }
 
+.inverting-cursor.is-visual .inverting-cursor__shape {
+  width: 4px;
+  height: 4px;
+}
+
 .inverting-cursor.is-pressed:not(.is-text) .inverting-cursor__shape {
   border-radius: 44%;
   transform: translate(-50%, -50%) scale(1.55, .78);

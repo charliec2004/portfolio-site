@@ -174,14 +174,18 @@ function InvertingCursor() {
       if (!hasPointer) return;
 
       const element = document.elementFromPoint(x, y);
-      const state = element?.closest(interactiveSelector)
-        ? 'interactive'
+      const interactiveElement = element?.closest(interactiveSelector);
+      const state = interactiveElement
+        ? interactiveElement.classList.contains('project__visual-link')
+          ? 'visual'
+          : 'interactive'
         : isSelectableTextAtPoint(x, y, element)
           ? 'text'
           : 'default';
 
       cursor.style.transform = `translate3d(${x}px, ${y}px, 0) translate(-50%, -50%)`;
       cursor.classList.toggle('is-interactive', state === 'interactive');
+      cursor.classList.toggle('is-visual', state === 'visual');
       cursor.classList.toggle('is-text', state === 'text');
       cursor.style.opacity = '1';
     };
@@ -200,7 +204,7 @@ function InvertingCursor() {
     const hide = () => {
       hasPointer = false;
       cursor.style.opacity = '0';
-      cursor.classList.remove('is-text', 'is-interactive', 'is-pressed');
+      cursor.classList.remove('is-text', 'is-interactive', 'is-visual', 'is-pressed');
     };
 
     const press = () => {
