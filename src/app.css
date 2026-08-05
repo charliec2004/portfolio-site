@@ -923,6 +923,10 @@ a:hover > .external-arrow {
 }
 
 @media (max-width: 720px) {
+  .scroll-track {
+    display: none;
+  }
+
   .section-shell,
   .site-header {
     width: calc(100% - 36px);
