@@ -438,6 +438,65 @@ a:hover > .external-arrow {
   pointer-events: none;
 }
 
+/* August: a text thread where a loose end gets handed off and closed. */
+
+.visual--august {
+  display: grid;
+  place-items: center;
+  background: var(--paper-raised);
+  color: var(--ink);
+}
+
+.thread {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(10px, 1.2vw, 16px);
+  width: 80%;
+}
+
+.thread__top {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: clamp(8px, 1vw, 14px);
+  padding-bottom: 14px;
+  border-bottom: 1px solid var(--line-strong);
+}
+
+.thread__msg {
+  max-width: 82%;
+  margin: 0;
+  padding: clamp(11px, 1.3vw, 18px) clamp(14px, 1.6vw, 22px);
+  border: 1px solid var(--line-strong);
+  font-size: clamp(12px, 1.1vw, 17px);
+  line-height: 1.45;
+}
+
+.thread__msg--out {
+  align-self: flex-end;
+  background: var(--ink);
+  color: var(--inverse);
+  border-color: var(--ink);
+}
+
+.thread__msg--in {
+  align-self: flex-start;
+  background: var(--paper);
+}
+
+/* The closing message arrives on hover; touch devices see it straight away. */
+@media (hover: hover) {
+  .thread__msg--later {
+    opacity: 0;
+    transform: translateY(14px);
+    transition: opacity 450ms ease, transform 600ms cubic-bezier(.2, .8, .2, 1);
+  }
+
+  .project__visual-link:hover .thread__msg--later {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 /* Quorum: a degree plan laid out by term. */
 
 .visual--quorum {

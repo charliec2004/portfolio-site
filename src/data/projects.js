@@ -1,5 +1,13 @@
 export const PROJECTS = [
   {
+    name: 'August',
+    url: 'https://tryaugust.app',
+    description:
+      'A personal assistant you text. Hand it the loose ends, follow-ups, and deadlines you don’t want to keep chasing, and it works across your apps and the web until they’re done.',
+    tech: ['TypeScript', 'Next.js', 'Convex', 'Cloudflare Workers', 'Agentic pipelines'],
+    visual: 'august',
+  },
+  {
     name: 'Quorum',
     url: 'https://tryquorum.app',
     description:

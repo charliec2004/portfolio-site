@@ -14,6 +14,13 @@ Charles Conner works across product and engineering, from early decisions throug
 
 ## Selected work
 
+### August
+
+August is a personal assistant you text. Users hand it the loose ends, follow-ups, and deadlines they do not want to keep chasing, and it works across their apps and the web until they are done.
+
+- URL: https://tryaugust.app
+- Technologies: TypeScript, Next.js, Convex, Cloudflare Workers, agentic pipelines
+
 ### Quorum
 
 Quorum is a degree planner that parses a school's catalog and lays out every requirement across every semester in one clear plan.

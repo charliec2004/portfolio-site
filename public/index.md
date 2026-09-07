@@ -14,6 +14,13 @@ Charles Conner works across product and engineering, from early decisions throug
 
 ## Selected work
 
+### August
+
+A personal assistant you text. Hand it the loose ends, follow-ups, and deadlines you do not want to keep chasing, and it works across your apps and the web until they are done.
+
+- URL: https://tryaugust.app
+- Technologies: TypeScript, Next.js, Convex, Cloudflare Workers, agentic pipelines
+
 ### Quorum
 
 A degree planner that parses a school's catalog and lays out every requirement across every semester in one clear plan.

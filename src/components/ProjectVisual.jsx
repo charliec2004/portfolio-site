@@ -6,6 +6,28 @@ const FILLED_CELLS = new Set([3, 6, 8, 13, 16, 17, 22, 26, 31]);
  * are taken from the project's own README.
  */
 export default function ProjectVisual({ kind }) {
+  if (kind === 'august') {
+    return (
+      <div className="visual visual--august" aria-hidden="true">
+        <div className="thread">
+          <div className="thread__top">
+            <span>Messages</span>
+            <span>August</span>
+          </div>
+          <p className="thread__msg thread__msg--out">
+            Keep an eye on the airline refund. It should land by Friday.
+          </p>
+          <p className="thread__msg thread__msg--in">
+            On it. I’ll follow up with them if it hasn’t posted by Thursday.
+          </p>
+          <p className="thread__msg thread__msg--in thread__msg--later">
+            Refund posted this morning. Nothing left to chase.
+          </p>
+        </div>
+      </div>
+    );
+  }
+
   if (kind === 'quorum') {
     return (
       <div className="visual visual--quorum" aria-hidden="true">
