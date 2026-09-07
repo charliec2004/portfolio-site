@@ -47,5 +47,5 @@ public/                         # Static assets, llms.txt, index.md, sitemap
 worker/index.ts                 # Cloudflare Worker
 ```
 
-The pre-2026 design is preserved on the `legacy/pre-redesign` branch; see
+The pre-2026 design is preserved under the `legacy/pre-redesign` tag; see
 `LEGACY.md`.
