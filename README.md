@@ -1,49 +1,51 @@
-# Charlie Conner - Portfolio
+# Charles Conner — Portfolio
 
-[![React](https://img.shields.io/badge/React-19-61DAFB?style=flat&logo=react&logoColor=white)](https://react.dev)
-[![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-4.0-06B6D4?style=flat&logo=tailwindcss&logoColor=white)](https://tailwindcss.com)
-[![Vite](https://img.shields.io/badge/Vite-7-646CFF?style=flat&logo=vite&logoColor=white)](https://vite.dev)
+Personal site for Charles Conner, live at [charlieconner.com](https://charlieconner.com).
 
-A portfolio site built with React, Tailwind CSS 4, and Vite. Features magnetic tilt cards, a built-in terminal, scroll-reveal animations, and an expandable card system with cross-fade transitions.
+A single-page React app: hero, selected work, about, contact. Light and dark
+themes, a WebGL dot field in the hero, and a small custom cursor on
+fine-pointer devices. The Cloudflare Worker in `worker/` serves the built
+assets, adds security headers, and returns a Markdown representation of the
+page to clients that ask for `text/markdown`.
 
-**Live site**: [charlieconner.com](https://charlieconner.com)
-
-## Getting Started
+## Develop
 
 ```bash
-git clone https://github.com/charliec2004/portfoilo-site.git
-cd portfolio-site
 npm install
 npm run dev
 ```
 
-## Tech Stack
+## Check and build
 
-- **Framework**: React 19
-- **Styling**: Tailwind CSS 4 (CSS-first `@theme` config)
-- **Build**: Vite 7
-- **Deployment**: GitHub Actions → GitHub Pages
-- **Fonts**: Inter, Merriweather
+```bash
+npm run lint          # ESLint over src/
+npm run check:worker  # TypeScript check for worker/
+npm run build         # Production build to dist/
+```
 
-## Project Structure
+## Deploy
+
+```bash
+npm run deploy:cloudflare:dry   # Build and validate the Worker config
+npm run deploy:cloudflare       # Build and deploy with Wrangler
+```
+
+## Structure
 
 ```text
 src/
-├── assets/              # Images, icons, skill SVGs
+├── App.jsx                     # Page layout and copy
+├── app.css                     # Theme tokens and all styles
 ├── components/
-│   ├── cards/           # AboutCard, ProfileCard, SkillsCard, etc.
-│   ├── layout/          # MainGrid, LeftColumn, RightColumn
-│   ├── Terminal.jsx     # Built-in terminal (press ` to open)
-│   ├── Cursor.jsx       # Custom cursor
-│   └── FilmGrain.jsx    # Film grain overlay
-├── data/                # Projects, skills data
-├── hooks/               # Tilt, animations, terminal, GitHub API
-├── app.css              # Theme tokens, custom utilities
-└── App.jsx              # Root layout
+│   ├── Cursor.jsx              # Custom pointer
+│   ├── ExternalLink.jsx        # New-tab link with outward arrow
+│   ├── PointWaveField.jsx      # WebGL hero background
+│   └── ProjectVisual.jsx       # Illustrations for each project
+├── data/projects.js            # Project list
+└── hooks/useTheme.js           # Light/dark theme with persistence
+public/                         # Static assets, llms.txt, index.md, sitemap
+worker/index.ts                 # Cloudflare Worker
 ```
 
-## Contact
-
-- Email: [charlieconner04@gmail.com](mailto:charlieconner04@gmail.com)
-- LinkedIn: [charlescon](https://linkedin.com/in/charlescon)
-- GitHub: [charliec2004](https://github.com/charliec2004)
+The pre-2026 design is preserved on the `legacy/pre-redesign` branch; see
+`LEGACY.md`.

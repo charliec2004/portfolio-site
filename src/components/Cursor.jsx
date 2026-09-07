@@ -1,165 +1,206 @@
-import { useEffect, useRef, useState } from 'react';
-import { createPortal } from 'react-dom';
+import { useEffect, useRef } from 'react';
 
+const INTERACTIVE_SELECTOR = 'a, button, summary, [role="button"]';
+const NON_TEXT_SELECTOR =
+  'a, button, input, textarea, select, summary, [role="button"], [contenteditable="true"]';
+
+/**
+ * A small inverting dot that follows the pointer on fine-pointer devices.
+ * It grows over interactive elements and becomes a caret over selectable text.
+ * On touch devices it renders nothing visible and attaches no listeners.
+ */
 export default function Cursor() {
-  const dotRef = useRef(null);
-  const ringRef = useRef(null);
-  const glowRef = useRef(null);
-  const mouse = useRef({ x: -100, y: -100 });
-  const ring = useRef({ x: -100, y: -100 });
-  const glow = useRef({ x: -100, y: -100 });
-  const hovering = useRef(false);
-  const clicking = useRef(false);
-  const rafId = useRef(null);
-  const [isTouchDevice, setIsTouchDevice] = useState(true);
+  const cursorRef = useRef(null);
 
   useEffect(() => {
-    const coarse = window.matchMedia('(pointer: coarse)');
-    const noHover = window.matchMedia('(hover: none)');
-    if (coarse.matches || noHover.matches) {
-      setIsTouchDevice(true);
-      return;
-    }
-    setIsTouchDevice(false);
-  }, []);
+    const finePointer = window.matchMedia('(hover: hover) and (pointer: fine)');
+    if (!finePointer.matches) return undefined;
 
-  useEffect(() => {
-    if (isTouchDevice) return;
+    const cursor = cursorRef.current;
+    let frame = null;
+    let x = 0;
+    let y = 0;
+    let hasPointer = false;
+    const metricsContext = document.createElement('canvas').getContext('2d');
+    const metricsCache = new Map();
 
-    const dot = dotRef.current;
-    const ringEl = ringRef.current;
-    const glowEl = glowRef.current;
-    if (!dot || !ringEl || !glowEl) return;
+    const getGlyphMetrics = (style, character) => {
+      if (!metricsContext) return null;
 
-    const handleMouseMove = (e) => {
-      mouse.current.x = e.clientX;
-      mouse.current.y = e.clientY;
+      const renderedCharacter = style.textTransform === 'uppercase'
+        ? character.toLocaleUpperCase()
+        : style.textTransform === 'lowercase'
+          ? character.toLocaleLowerCase()
+          : character;
+      const font = [
+        style.fontStyle,
+        style.fontVariant,
+        style.fontWeight,
+        style.fontSize,
+        style.fontFamily,
+      ].join(' ');
+      const cacheKey = `${font}|${renderedCharacter}`;
+
+      if (metricsCache.has(cacheKey)) return metricsCache.get(cacheKey);
+
+      metricsContext.font = font;
+      const glyph = metricsContext.measureText(renderedCharacter);
+      const fontBox = metricsContext.measureText('Hg');
+      const fontSize = Number.parseFloat(style.fontSize) || 16;
+      const metrics = {
+        ascent: glyph.actualBoundingBoxAscent || fontSize * 0.72,
+        descent: glyph.actualBoundingBoxDescent || fontSize * 0.18,
+        fontAscent: fontBox.fontBoundingBoxAscent
+          || fontBox.actualBoundingBoxAscent
+          || fontSize * 0.8,
+        fontDescent: fontBox.fontBoundingBoxDescent
+          || fontBox.actualBoundingBoxDescent
+          || fontSize * 0.2,
+      };
+
+      metricsCache.set(cacheKey, metrics);
+      return metrics;
     };
 
-    const handleMouseOver = (e) => {
-      if (e.target.closest('a, button, [role="button"]')) {
-        hovering.current = true;
+    const isSelectableTextAtPoint = (clientX, clientY, element) => {
+      const elementStyle = element ? window.getComputedStyle(element) : null;
+
+      if (
+        !element
+        || element.closest(NON_TEXT_SELECTOR)
+        || elementStyle?.userSelect === 'none'
+      ) {
+        return false;
+      }
+
+      let textNode;
+      let offset;
+
+      if (document.caretPositionFromPoint) {
+        const position = document.caretPositionFromPoint(clientX, clientY);
+        textNode = position?.offsetNode;
+        offset = position?.offset;
+      } else if (document.caretRangeFromPoint) {
+        const range = document.caretRangeFromPoint(clientX, clientY);
+        textNode = range?.startContainer;
+        offset = range?.startOffset;
+      }
+
+      if (
+        textNode?.nodeType !== Node.TEXT_NODE
+        || !textNode.textContent?.trim()
+        || typeof offset !== 'number'
+      ) {
+        return false;
+      }
+
+      const textLength = textNode.textContent.length;
+      const characterOffsets = [];
+
+      if (offset < textLength) characterOffsets.push([offset, offset + 1]);
+      if (offset > 0) characterOffsets.push([offset - 1, offset]);
+
+      return characterOffsets.some(([start, end]) => {
+        const character = textNode.textContent.slice(start, end);
+        if (!character.trim()) return false;
+
+        const range = document.createRange();
+        range.setStart(textNode, start);
+        range.setEnd(textNode, end);
+        const rect = range.getBoundingClientRect();
+        const textElement = textNode.parentElement || element;
+        const textStyle = window.getComputedStyle(textElement);
+        const metrics = getGlyphMetrics(textStyle, character);
+
+        if (!metrics) return false;
+
+        const fontBoxHeight = metrics.fontAscent + metrics.fontDescent;
+        const baseline = (
+          rect.top
+          + ((rect.height - fontBoxHeight) / 2)
+          + metrics.fontAscent
+        );
+        const visualTop = baseline - metrics.ascent;
+        const visualBottom = baseline + metrics.descent;
+
+        return (
+          clientX >= rect.left - 2
+          && clientX <= rect.right + 2
+          && clientY >= visualTop - 2
+          && clientY <= visualBottom + 2
+        );
+      });
+    };
+
+    const render = () => {
+      frame = null;
+      if (!hasPointer) return;
+
+      const element = document.elementFromPoint(x, y);
+      const interactiveElement = element?.closest(INTERACTIVE_SELECTOR);
+      const state = interactiveElement
+        ? interactiveElement.classList.contains('project__visual-link')
+          ? 'visual'
+          : 'interactive'
+        : isSelectableTextAtPoint(x, y, element)
+          ? 'text'
+          : 'default';
+
+      cursor.style.transform = `translate3d(${x}px, ${y}px, 0) translate(-50%, -50%)`;
+      cursor.classList.toggle('is-interactive', state === 'interactive');
+      cursor.classList.toggle('is-visual', state === 'visual');
+      cursor.classList.toggle('is-text', state === 'text');
+      cursor.style.opacity = '1';
+    };
+
+    const scheduleRender = () => {
+      if (frame === null) frame = window.requestAnimationFrame(render);
+    };
+
+    const move = (event) => {
+      x = event.clientX;
+      y = event.clientY;
+      hasPointer = true;
+      scheduleRender();
+    };
+
+    const hide = () => {
+      hasPointer = false;
+      cursor.style.opacity = '0';
+      cursor.classList.remove('is-text', 'is-interactive', 'is-visual', 'is-pressed');
+    };
+
+    const press = () => {
+      if (!cursor.classList.contains('is-text')) {
+        cursor.classList.add('is-pressed');
       }
     };
 
-    const handleMouseOut = (e) => {
-      if (e.target.closest('a, button, [role="button"]')) {
-        hovering.current = false;
-      }
-    };
+    const release = () => cursor.classList.remove('is-pressed');
 
-    const handleMouseDown = () => { clicking.current = true; };
-    const handleMouseUp = () => { clicking.current = false; };
-
-    const animate = () => {
-      // Ring trails with lerp
-      ring.current.x += (mouse.current.x - ring.current.x) * 0.12;
-      ring.current.y += (mouse.current.y - ring.current.y) * 0.12;
-
-      // Glow trails even slower
-      glow.current.x += (mouse.current.x - glow.current.x) * 0.06;
-      glow.current.y += (mouse.current.y - glow.current.y) * 0.06;
-
-      const isHover = hovering.current;
-      const isClick = clicking.current;
-
-      // Ring morphs on hover/click
-      const ringSize = isClick ? 24 : isHover ? 56 : 40;
-      const ringBorder = isHover ? 2 : 1.5;
-      const ringOpacity = isClick ? 0.8 : isHover ? 0.6 : 0.35;
-
-      ringEl.style.width = `${ringSize}px`;
-      ringEl.style.height = `${ringSize}px`;
-      ringEl.style.borderWidth = `${ringBorder}px`;
-      ringEl.style.borderColor = isHover
-        ? 'rgba(179, 142, 57, 0.7)'
-        : `rgba(249, 246, 238, ${ringOpacity})`;
-      ringEl.style.transform = `translate(${ring.current.x}px, ${ring.current.y}px) translate(-50%, -50%)`;
-
-      // Dot changes on hover
-      const dotSize = isClick ? 12 : isHover ? 6 : 8;
-      const dotOpacity = isHover ? 0.5 : 1;
-      dot.style.width = `${dotSize}px`;
-      dot.style.height = `${dotSize}px`;
-      dot.style.opacity = dotOpacity;
-      dot.style.background = isHover ? 'rgba(179, 142, 57, 0.9)' : '#F9F6EE';
-      dot.style.transform = `translate(${mouse.current.x}px, ${mouse.current.y}px) translate(-50%, -50%)`;
-
-      // Glow trail
-      const glowSize = isHover ? 80 : 60;
-      const glowOpacity = isHover ? 0.08 : 0.04;
-      glowEl.style.background = isHover
-        ? `radial-gradient(circle, rgba(179, 142, 57, ${glowOpacity}) 0%, transparent 70%)`
-        : `radial-gradient(circle, rgba(249, 246, 238, ${glowOpacity}) 0%, transparent 70%)`;
-      glowEl.style.width = `${glowSize}px`;
-      glowEl.style.height = `${glowSize}px`;
-      glowEl.style.transform = `translate(${glow.current.x}px, ${glow.current.y}px) translate(-50%, -50%)`;
-
-      rafId.current = requestAnimationFrame(animate);
-    };
-
-    document.addEventListener('mousemove', handleMouseMove);
-    document.addEventListener('mouseover', handleMouseOver);
-    document.addEventListener('mouseout', handleMouseOut);
-    document.addEventListener('mousedown', handleMouseDown);
-    document.addEventListener('mouseup', handleMouseUp);
-    rafId.current = requestAnimationFrame(animate);
+    window.addEventListener('pointermove', move, { passive: true });
+    window.addEventListener('pointerdown', press, { passive: true });
+    window.addEventListener('pointerup', release, { passive: true });
+    window.addEventListener('pointercancel', release, { passive: true });
+    window.addEventListener('scroll', scheduleRender, { passive: true });
+    window.addEventListener('blur', hide);
+    document.documentElement.addEventListener('mouseleave', hide);
 
     return () => {
-      document.removeEventListener('mousemove', handleMouseMove);
-      document.removeEventListener('mouseover', handleMouseOver);
-      document.removeEventListener('mouseout', handleMouseOut);
-      document.removeEventListener('mousedown', handleMouseDown);
-      document.removeEventListener('mouseup', handleMouseUp);
-      cancelAnimationFrame(rafId.current);
+      if (frame !== null) window.cancelAnimationFrame(frame);
+      window.removeEventListener('pointermove', move);
+      window.removeEventListener('pointerdown', press);
+      window.removeEventListener('pointerup', release);
+      window.removeEventListener('pointercancel', release);
+      window.removeEventListener('scroll', scheduleRender);
+      window.removeEventListener('blur', hide);
+      document.documentElement.removeEventListener('mouseleave', hide);
     };
-  }, [isTouchDevice]);
+  }, []);
 
-  if (isTouchDevice) return null;
-
-  const base = {
-    position: 'fixed',
-    top: 0,
-    left: 0,
-    pointerEvents: 'none',
-    borderRadius: '50%',
-    willChange: 'transform',
-  };
-
-  const layers = (
-    <>
-      {/* Glow trail — slowest, largest */}
-      <div
-        ref={glowRef}
-        style={{ ...base, width: 60, height: 60, zIndex: 10098 }}
-      />
-      {/* Ring — medium speed, morphs on hover */}
-      <div
-        ref={ringRef}
-        style={{
-          ...base,
-          width: 40,
-          height: 40,
-          border: '1.5px solid rgba(249, 246, 238, 0.35)',
-          transition: 'width 0.25s ease, height 0.25s ease, border-color 0.25s ease, border-width 0.2s ease',
-          zIndex: 10099,
-        }}
-      />
-      {/* Dot — instant, snappy */}
-      <div
-        ref={dotRef}
-        style={{
-          ...base,
-          width: 8,
-          height: 8,
-          background: '#F9F6EE',
-          transition: 'width 0.15s ease, height 0.15s ease, opacity 0.15s ease, background 0.2s ease',
-          boxShadow: '0 0 6px 1px rgba(249, 246, 238, 0.3)',
-          zIndex: 10100,
-        }}
-      />
-    </>
+  return (
+    <div ref={cursorRef} className="cursor" aria-hidden="true">
+      <i className="cursor__shape" />
+    </div>
   );
-
-  return typeof document !== 'undefined' ? createPortal(layers, document.body) : null;
 }
