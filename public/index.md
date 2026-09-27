@@ -8,16 +8,7 @@ content_signal: ai-train=no, search=yes, ai-input=yes
 
 Product engineer based in the Bay Area. Building useful software, from student schedules to personal assistants.
 
-## Selected work
-
-### Semester Scheduler
-
-Used across multiple departments at Chapman University.
-
-Student-worker shifts, built around availability and department needs.
-
-- URL: https://github.com/charliec2004/semester-scheduler-app
-- Technologies: Python, OR-Tools, Electron, React
+## Things I’ve Built
 
 ### August
 
@@ -30,10 +21,21 @@ Hand off the follow-ups, deadlines, and loose ends on your mind.
 
 ### Quorum
 
-A clearer path through your degree, semester by semester.
+A clearer path through your degree.
+
+Plan your requirements, semester by semester.
 
 - URL: https://tryquorum.app
 - Technologies: React, TypeScript, Next.js
+
+## More things I’ve made
+
+### Semester Scheduler
+
+Student-worker scheduling used across multiple departments at Chapman University.
+
+- URL: https://github.com/charliec2004/semester-scheduler-app
+- Technologies: Python, OR-Tools, Electron, React
 
 ### Tennis Match Predictor
 
@@ -44,7 +46,7 @@ Predicting tennis outcomes from player stats and surface-specific Elo ratings.
 
 ## About
 
-I like turning a messy problem into something useful. I’m currently studying computer science at Chapman University. These days, I’m exploring personal assistants, everyday planning tools, and what tennis data can tell us about the next match.
+I’m currently studying computer science at Chapman University. These days, I’m exploring personal assistants, everyday planning tools, and what tennis data can tell us about the next match.
 
 ## Contact
 

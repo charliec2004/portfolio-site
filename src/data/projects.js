@@ -1,14 +1,5 @@
 export const PROJECTS = [
   {
-    name: 'Semester Scheduler',
-    visual: 'scheduler',
-    featured: true,
-    url: 'https://github.com/charliec2004/semester-scheduler-app',
-    outcome: 'Used across multiple departments at Chapman University.',
-    description: 'Student-worker shifts, built around availability and department needs.',
-    tech: ['Python', 'OR-Tools', 'Electron', 'React'],
-  },
-  {
     name: 'August',
     visual: 'august',
     featured: true,
@@ -19,10 +10,19 @@ export const PROJECTS = [
   },
   {
     name: 'Quorum',
-    featured: false,
+    visual: 'quorum',
+    featured: true,
     url: 'https://tryquorum.app',
-    description: 'A clearer path through your degree, semester by semester.',
+    outcome: 'A clearer path through your degree.',
+    description: 'Plan your requirements, semester by semester.',
     tech: ['React', 'TypeScript', 'Next.js'],
+  },
+  {
+    name: 'Semester Scheduler',
+    featured: false,
+    url: 'https://github.com/charliec2004/semester-scheduler-app',
+    description: 'Student-worker scheduling used across multiple departments at Chapman University.',
+    tech: ['Python', 'OR-Tools', 'Electron', 'React'],
   },
   {
     name: 'Tennis Match Predictor',
