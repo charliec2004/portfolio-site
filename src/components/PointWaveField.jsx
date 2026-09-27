@@ -91,7 +91,11 @@ function createProgram(gl) {
   const vertexShader = createShader(gl, gl.VERTEX_SHADER, VERTEX_SHADER);
   const fragmentShader = createShader(gl, gl.FRAGMENT_SHADER, FRAGMENT_SHADER);
 
-  if (!vertexShader || !fragmentShader) return null;
+  if (!vertexShader || !fragmentShader) {
+    if (vertexShader) gl.deleteShader(vertexShader);
+    if (fragmentShader) gl.deleteShader(fragmentShader);
+    return null;
+  }
 
   const program = gl.createProgram();
   gl.attachShader(program, vertexShader);
@@ -110,6 +114,7 @@ function createProgram(gl) {
 
 export default function PointWaveField({ theme }) {
   const canvasRef = useRef(null);
+  const rendererRef = useRef(null);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -166,7 +171,6 @@ export default function PointWaveField({ theme }) {
     gl.useProgram(program);
     gl.enableVertexAttribArray(positionLocation);
     gl.vertexAttribPointer(positionLocation, 2, gl.FLOAT, false, 0, 0);
-    gl.clearColor(0, 0, 0, 0);
 
     const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
     const finePointer = window.matchMedia('(hover: hover) and (pointer: fine)');
@@ -183,17 +187,15 @@ export default function PointWaveField({ theme }) {
     let isIntersecting = true;
     let isDocumentVisible = !document.hidden;
     let startTime = performance.now();
+    let pendingPointer = null;
 
-    const updateColor = () => {
-      gl.useProgram(program);
-      if (theme === 'dark') {
+    const updateColor = (nextTheme) => {
+      if (nextTheme === 'dark') {
         gl.uniform3f(colorLocation, 0.945, 0.945, 0.929);
         gl.uniform3f(backgroundLocation, 0.039, 0.039, 0.039);
-        gl.clearColor(0.039, 0.039, 0.039, 1);
       } else {
         gl.uniform3f(colorLocation, 0.039, 0.039, 0.039);
         gl.uniform3f(backgroundLocation, 0.957, 0.957, 0.941);
-        gl.clearColor(0.957, 0.957, 0.941, 1);
       }
     };
 
@@ -216,14 +218,30 @@ export default function PointWaveField({ theme }) {
     const draw = (now = performance.now()) => {
       animationFrame = null;
 
+      // Pointer events can arrive faster than frames. Measure layout only once
+      // for the latest position, immediately before it is used.
+      if (pendingPointer) {
+        const { clientX, clientY } = pendingPointer;
+        pendingPointer = null;
+        const rect = canvas.getBoundingClientRect();
+        const inside = rect.width > 0 && rect.height > 0
+          && clientX >= rect.left && clientX <= rect.right
+          && clientY >= rect.top && clientY <= rect.bottom;
+
+        pointer.targetStrength = inside ? 1 : 0;
+        if (inside) {
+          pointer.targetX = (clientX - rect.left) / rect.width;
+          pointer.targetY = 1 - ((clientY - rect.top) / rect.height);
+        }
+      }
+
       pointer.currentX += (pointer.targetX - pointer.currentX) * 0.08;
       pointer.currentY += (pointer.targetY - pointer.currentY) * 0.08;
       pointer.currentStrength += (
         pointer.targetStrength - pointer.currentStrength
       ) * 0.075;
 
-      gl.clear(gl.COLOR_BUFFER_BIT);
-      gl.useProgram(program);
+      // The opaque full-screen triangle overwrites every pixel.
       gl.uniform2f(mouseLocation, pointer.currentX, pointer.currentY);
       gl.uniform1f(mouseStrengthLocation, pointer.currentStrength);
       gl.uniform1f(timeLocation, reducedMotion.matches ? 0 : (now - startTime) / 1000);
@@ -241,25 +259,16 @@ export default function PointWaveField({ theme }) {
     };
 
     const onPointerMove = (event) => {
-      if (!finePointer.matches || !isIntersecting || !isDocumentVisible) return;
+      if (reducedMotion.matches || !finePointer.matches
+        || !isIntersecting || !isDocumentVisible) return;
 
-      const rect = canvas.getBoundingClientRect();
-      const inside = (
-        event.clientX >= rect.left
-        && event.clientX <= rect.right
-        && event.clientY >= rect.top
-        && event.clientY <= rect.bottom
-      );
-
-      pointer.targetStrength = inside ? 1 : 0;
-      if (inside) {
-        pointer.targetX = (event.clientX - rect.left) / rect.width;
-        pointer.targetY = 1 - ((event.clientY - rect.top) / rect.height);
-      }
+      pendingPointer = { clientX: event.clientX, clientY: event.clientY };
       requestDraw();
     };
 
     const onPointerLeave = () => {
+      if (reducedMotion.matches) return;
+      pendingPointer = null;
       pointer.targetStrength = 0;
       requestDraw();
     };
@@ -275,7 +284,12 @@ export default function PointWaveField({ theme }) {
       }
     };
 
-    const onMotionChange = () => requestDraw();
+    const onMotionChange = () => {
+      pendingPointer = null;
+      pointer.currentStrength = 0;
+      pointer.targetStrength = 0;
+      requestDraw();
+    };
     const onResize = () => {
       resize();
       requestDraw();
@@ -307,11 +321,14 @@ export default function PointWaveField({ theme }) {
       reducedMotion.addListener?.(onMotionChange);
     }
 
-    updateColor();
+    rendererRef.current = (nextTheme) => {
+      updateColor(nextTheme);
+      requestDraw();
+    };
     resize();
-    requestDraw();
 
     return () => {
+      rendererRef.current = null;
       if (animationFrame !== null) window.cancelAnimationFrame(animationFrame);
       resizeObserver?.disconnect();
       intersectionObserver?.disconnect();
@@ -327,6 +344,11 @@ export default function PointWaveField({ theme }) {
       gl.deleteBuffer(positionBuffer);
       gl.deleteProgram(program);
     };
+  }, []);
+
+  // Theme changes only update uniforms; retain the compiled shaders and buffer.
+  useEffect(() => {
+    rendererRef.current?.(theme);
   }, [theme]);
 
   return (
