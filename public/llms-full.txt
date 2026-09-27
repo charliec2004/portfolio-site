@@ -1,66 +1,54 @@
 ---
 title: Charles Conner — Product Engineer
-description: Personal portfolio for Charles Conner, a Bay Area product engineer working across software, systems, product thinking, and applied AI.
 canonical: https://charlieconner.com/
-updated: 2026-07-27
 content_signal: ai-train=no, search=yes, ai-input=yes
 ---
 
 # Charles Conner
 
-> Product engineer based in the Bay Area.
-
-Charles Conner works across product and engineering, from early decisions through shipped software. His background combines computer science at Chapman University with analytics, product thinking, and hands-on engineering.
+Product engineer based in the Bay Area. Building useful software, from student schedules to personal assistants.
 
 ## Selected work
 
+### Semester Scheduler
+
+Used across multiple departments at Chapman University.
+
+Student-worker shifts, built around availability and department needs.
+
+- URL: https://github.com/charliec2004/semester-scheduler-app
+- Technologies: Python, OR-Tools, Electron, React
+
 ### August
 
-August is a personal assistant you text. Users hand it the loose ends, follow-ups, and deadlines they do not want to keep chasing, and it works across their apps and the web until they are done.
+A personal assistant you can text.
+
+Hand off the follow-ups, deadlines, and loose ends on your mind.
 
 - URL: https://tryaugust.app
-- Technologies: TypeScript, Next.js, Convex, Cloudflare Workers, agentic pipelines
+- Technologies: TypeScript, Next.js, Convex, Cloudflare Workers
 
 ### Quorum
 
-Quorum is a degree planner that parses a school's catalog and lays out every requirement across every semester in one clear plan.
+A clearer path through your degree, semester by semester.
 
 - URL: https://tryquorum.app
-- Technologies: React, TypeScript, Next.js, agentic pipelines
+- Technologies: React, TypeScript, Next.js
 
-### Semester Scheduler
+### Tennis Match Predictor
 
-Semester Scheduler is an automated scheduling system that builds optimal weekly staff rosters using constraint programming with Google OR-Tools CP-SAT.
-
-- URL: https://github.com/charliec2004/semester-scheduler-app
-- Technologies: TypeScript, Python, Electron, React
-
-### ML Tennis Match Predictor
-
-The ML Tennis Match Predictor predicts tennis match outcomes using player statistics and historical match data.
+Predicting tennis outcomes from player stats and surface-specific Elo ratings.
 
 - URL: https://github.com/charliec2004/ML-Tennis-Match-Predictor
 - Technologies: Python, scikit-learn, Pandas
 
-## Practice
+## About
 
-- Product engineering
-- Interface design
-- Agentic systems
-- Applied machine learning
-- Systems thinking
+I like turning a messy problem into something useful. I studied computer science at Chapman University. These days, I’m exploring personal assistants, everyday planning tools, and what tennis data can tell us about the next match.
 
-## Contact and canonical profiles
+## Contact
 
 - Email: [charlieconner04@gmail.com](mailto:charlieconner04@gmail.com)
 - GitHub: https://github.com/charliec2004
 - LinkedIn: https://www.linkedin.com/in/charlescon
-- X / Twitter: https://x.com/charliee_
-
-## Usage notes for agents
-
-- The canonical human-facing page is https://charlieconner.com/.
-- Request the homepage with `Accept: text/markdown` for this representation.
-- The explicit Markdown URL is https://charlieconner.com/index.md.
-- The short discovery index is https://charlieconner.com/llms.txt.
-- This portfolio does not expose an API, authentication service, MCP server, commerce protocol, or agent action surface.
+- X: https://x.com/charliee_

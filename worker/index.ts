@@ -16,7 +16,7 @@ const SECURITY_HEADERS = {
     "frame-ancestors 'none'",
     "img-src 'self' data:",
     "object-src 'none'",
-    "script-src 'self' https://static.cloudflareinsights.com/beacon.min.js 'sha256-+VR5tME3K6xlz48uRWxNfV/pBRk5HX0gIqQ2w2JuHEw='",
+    "script-src 'self' https://static.cloudflareinsights.com/beacon.min.js 'sha256-4ZbcHI3Mbe1Er9pZZo4bAVvbMRA8DBQlSWXhG7DGGE4='",
     "style-src 'self' 'unsafe-inline'",
     'upgrade-insecure-requests',
   ].join('; '),

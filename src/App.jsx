@@ -1,7 +1,8 @@
 import { useEffect, useRef, useState } from 'react';
+import Cursor from './components/Cursor';
+import ProjectVisual from './components/ProjectVisual';
 import ExternalLink from './components/ExternalLink';
 import PointWaveField from './components/PointWaveField';
-import ProjectVisual from './components/ProjectVisual';
 import { PROJECTS } from './data/projects';
 import useTheme from './hooks/useTheme';
 
@@ -13,13 +14,6 @@ const SOCIALS = [
   { label: 'X', href: 'https://x.com/charliee_' },
 ];
 
-const FOCUS = [
-  'Product engineering',
-  'Interface design',
-  'Agentic systems',
-  'Applied machine learning',
-  'Systems thinking',
-];
 
 async function copyText(text) {
   try {
@@ -32,14 +26,15 @@ async function copyText(text) {
     input.style.opacity = '0';
     document.body.appendChild(input);
     input.select();
-    document.execCommand('copy');
+    const success = document.execCommand('copy');
     input.remove();
+    if (!success) throw new Error('Copy unavailable');
   }
 }
 
 function App() {
   const { theme, toggleTheme } = useTheme();
-  const [copied, setCopied] = useState(false);
+  const [copyStatus, setCopyStatus] = useState('idle');
   const [menuOpen, setMenuOpen] = useState(false);
   const copyTimer = useRef(null);
   const menuToggle = useRef(null);
@@ -71,16 +66,22 @@ function App() {
   }, [menuOpen]);
 
   const copyEmail = async () => {
-    await copyText(EMAIL);
-    setCopied(true);
     window.clearTimeout(copyTimer.current);
-    copyTimer.current = window.setTimeout(() => setCopied(false), 1800);
+    try {
+      await copyText(EMAIL);
+      setCopyStatus('copied');
+      copyTimer.current = window.setTimeout(() => setCopyStatus('idle'), 1800);
+    } catch {
+      setCopyStatus('error');
+    }
   };
 
   const closeMenu = () => setMenuOpen(false);
 
   return (
     <>
+      <Cursor />
+      <a className="skip-link" href="#main-content">Skip to content</a>
       <header className="site-header">
         <a className="wordmark" href="/">Charles Conner</a>
 
@@ -112,7 +113,7 @@ function App() {
         </button>
       </header>
 
-      <main inert={menuOpen}>
+      <main id="main-content" inert={menuOpen}>
         <section className="hero section-shell" aria-labelledby="hero-title">
           <PointWaveField theme={theme} />
           <h1 id="hero-title">
@@ -121,9 +122,8 @@ function App() {
           </h1>
           <div className="hero__bottom">
             <p>
-              I build software end to end, from the first product decisions to
-              shipped code, across interfaces, systems, and applied AI. Based in
-              the Bay Area.
+              Based in the Bay Area. Building useful software, from
+              student schedules to personal assistants.
             </p>
             <a className="scroll-cue" href="#work">
               <span>Selected work</span>
@@ -133,34 +133,36 @@ function App() {
         </section>
 
         <section className="work section-shell" id="work" aria-labelledby="work-title">
-          <h2 className="section-title" id="work-title">Selected work</h2>
-
+          <div className="section-heading">
+            <h2 className="section-title" id="work-title">Selected work</h2>
+          </div>
           <div className="project-list">
-            {PROJECTS.map((project) => (
+            {PROJECTS.filter((project) => project.featured).map((project) => (
               <article className="project" key={project.name}>
                 <div className="project__copy">
-                  <h3>
-                    <a href={project.url} target="_blank" rel="noreferrer">
-                      {project.name}
-                    </a>
-                  </h3>
+                  <h3>{project.name}</h3>
+                  <p className="project__outcome">{project.outcome}</p>
                   <p>{project.description}</p>
-                  <p className="project__tech">{project.tech.join(', ')}</p>
                   <ExternalLink href={project.url} className="project__link">
-                    {project.url.includes('github.com') ? 'View on GitHub' : 'Visit site'}
+                    {project.url.includes('github.com') ? 'Explore the code' : 'Visit August'}
                   </ExternalLink>
                 </div>
-                <a
-                  className="project__visual-link"
-                  href={project.url}
-                  target="_blank"
-                  rel="noreferrer"
-                >
+                <a className="project__visual-link" href={project.url} target="_blank" rel="noreferrer" aria-label={`Explore ${project.name}`}>
                   <ProjectVisual kind={project.visual} />
-                  <span className="sr-only">Open {project.name}</span>
                 </a>
               </article>
             ))}
+          </div>
+          <div className="more-work">
+            <h3>More things I’ve made</h3>
+            <div className="more-work__grid">
+              {PROJECTS.filter((project) => !project.featured).map((project) => (
+                <article key={project.name}>
+                  <h4><ExternalLink href={project.url}>{project.name}</ExternalLink></h4>
+                  <p>{project.description}</p>
+                </article>
+              ))}
+            </div>
           </div>
         </section>
 
@@ -179,39 +181,29 @@ function App() {
             />
             <div className="about__body">
               <p className="about__lead">
-                I work across product and engineering, from early decisions
-                through shipped software.
+                I like turning a messy problem into something useful.
               </p>
-              <div className="about__columns">
-                <p>
-                  I like building things and learning by doing. I care about
-                  clear thinking, sound systems, and the small details that make
-                  software feel considered.
-                </p>
-                <p>
-                  I studied computer science at Chapman University. My background
-                  combines analytics, product thinking, and hands-on engineering.
-                </p>
-              </div>
-              <div className="focus">
-                <span>Focus</span>
-                <ul>
-                  {FOCUS.map((item) => <li key={item}>{item}</li>)}
-                </ul>
-              </div>
+              <p className="about__description">
+                I studied computer science at Chapman University. These days,
+                I’m exploring personal assistants, everyday planning tools,
+                and what tennis data can tell us about the next match.
+              </p>
             </div>
           </div>
         </section>
 
         <section className="contact section-shell" id="contact" aria-labelledby="contact-title">
           <h2 id="contact-title">Let’s talk.</h2>
-          <button className="email-button" type="button" onClick={copyEmail}>
-            <span>{EMAIL}</span>
-            <span>{copied ? 'Copied' : 'Copy'}</span>
-          </button>
-          <span className="sr-only" role="status" aria-live="polite">
-            {copied ? 'Email address copied' : ''}
-          </span>
+          <p className="contact__intro">A project, an interesting problem, or just a hello.</p>
+          <div className="email-row">
+            <a href={`mailto:${EMAIL}`}>{EMAIL}<span aria-hidden="true"> ↗</span></a>
+            <button className="email-button" type="button" onClick={copyEmail} aria-label="Copy email address">
+              {copyStatus === 'copied' ? 'Copied' : 'Copy email'}
+            </button>
+          </div>
+          <p className="copy-status" role="status" aria-live="polite">
+            {copyStatus === 'copied' ? 'Email address copied.' : copyStatus === 'error' ? 'Couldn’t copy. Select the address or use the email link.' : ''}
+          </p>
           <footer className="contact__footer">
             <div className="social-links">
               {SOCIALS.map((social) => (

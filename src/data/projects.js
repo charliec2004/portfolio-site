@@ -1,34 +1,34 @@
 export const PROJECTS = [
   {
+    name: 'Semester Scheduler',
+    visual: 'scheduler',
+    featured: true,
+    url: 'https://github.com/charliec2004/semester-scheduler-app',
+    outcome: 'Used across multiple departments at Chapman University.',
+    description: 'Student-worker shifts, built around availability and department needs.',
+    tech: ['Python', 'OR-Tools', 'Electron', 'React'],
+  },
+  {
     name: 'August',
-    url: 'https://tryaugust.app',
-    description:
-      'A personal assistant you text. Hand it the loose ends, follow-ups, and deadlines you don’t want to keep chasing, and it works across your apps and the web until they’re done.',
-    tech: ['TypeScript', 'Next.js', 'Convex', 'Cloudflare Workers', 'Agentic pipelines'],
     visual: 'august',
+    featured: true,
+    url: 'https://tryaugust.app',
+    outcome: 'A personal assistant you can text.',
+    description: 'Hand off the follow-ups, deadlines, and loose ends on your mind.',
+    tech: ['TypeScript', 'Next.js', 'Convex', 'Cloudflare Workers'],
   },
   {
     name: 'Quorum',
+    featured: false,
     url: 'https://tryquorum.app',
-    description:
-      'A degree planner that reads a school’s course catalog and lays out every requirement, semester by semester, in one plan.',
-    tech: ['React', 'TypeScript', 'Next.js', 'Agentic pipelines'],
-    visual: 'quorum',
+    description: 'A clearer path through your degree, semester by semester.',
+    tech: ['React', 'TypeScript', 'Next.js'],
   },
   {
-    name: 'Semester Scheduler',
-    url: 'https://github.com/charliec2004/semester-scheduler-app',
-    description:
-      'A desktop app that builds weekly staff rosters with constraint programming, replacing hours of manual scheduling with a solve that takes minutes.',
-    tech: ['Python', 'OR-Tools CP-SAT', 'Electron', 'React'],
-    visual: 'scheduler',
-  },
-  {
-    name: 'ML Tennis Match Predictor',
+    name: 'Tennis Match Predictor',
+    featured: false,
     url: 'https://github.com/charliec2004/ML-Tennis-Match-Predictor',
-    description:
-      'A gradient-boosting model that predicts professional tennis outcomes from historical results, player statistics, and surface-specific Elo ratings.',
+    description: 'Predicting tennis outcomes from player stats and surface-specific Elo ratings.',
     tech: ['Python', 'scikit-learn', 'Pandas'],
-    visual: 'tennis',
   },
 ];
