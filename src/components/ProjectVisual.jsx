@@ -64,8 +64,8 @@ export default function ProjectVisual({ kind }) {
           ))}
         </div>
         <div className="roster__foot">
-          <span>13 employees</span>
-          <span>6 departments</span>
+          <span>Student shifts</span>
+          <span>Chapman University</span>
         </div>
       </div>
     );

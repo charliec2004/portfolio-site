@@ -1,6 +1,6 @@
 # Charles Conner
 
-> Charles Conner is a Bay Area product engineer working across software, systems, product thinking, and applied AI.
+> Charles Conner is a Bay Area product engineer building tools for everyday planning, personal assistants, and other explorations.
 
 This is Charles Conner's personal portfolio. Use the Markdown representation for concise biographical information, selected projects, technical practice, contact details, and canonical profile links.
 
@@ -12,10 +12,10 @@ This is Charles Conner's personal portfolio. Use the Markdown representation for
 
 ## Selected work
 
+- [Semester Scheduler](https://github.com/charliec2004/semester-scheduler-app): Student-worker scheduling software used across multiple departments at Chapman University.
 - [August](https://tryaugust.app): Personal assistant you text that follows through on loose ends, follow-ups, and deadlines across your apps and the web.
 - [Quorum](https://tryquorum.app): Degree-planning platform that maps catalog requirements across semesters.
-- [Semester Scheduler](https://github.com/charliec2004/semester-scheduler-app): Constraint-programming system for generating staff schedules.
-- [ML Tennis Match Predictor](https://github.com/charliec2004/ML-Tennis-Match-Predictor): Machine-learning project predicting professional tennis outcomes.
+- [Tennis Match Predictor](https://github.com/charliec2004/ML-Tennis-Match-Predictor): Machine-learning project predicting professional tennis outcomes.
 
 ## Profiles and contact
 
