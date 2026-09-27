@@ -140,12 +140,15 @@ function App() {
             {PROJECTS.filter((project) => project.featured).map((project) => (
               <article className="project" key={project.name}>
                 <div className="project__copy">
-                  <h3>{project.name}</h3>
-                  <p className="project__outcome">{project.outcome}</p>
-                  <p>{project.description}</p>
-                  <ExternalLink href={project.url} className="project__link">
-                    {project.url.includes('github.com') ? 'Explore the code' : 'Visit August'}
-                  </ExternalLink>
+                  <h3>
+                    <a href={project.url} target="_blank" rel="noreferrer">
+                      {project.name}
+                    </a>
+                  </h3>
+                  <p>
+                    <span className="project__outcome">{project.outcome}</span>{' '}
+                    {project.description}
+                  </p>
                 </div>
                 <a className="project__visual-link" href={project.url} target="_blank" rel="noreferrer" aria-label={`Explore ${project.name}`}>
                   <ProjectVisual kind={project.visual} />
