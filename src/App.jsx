@@ -70,9 +70,10 @@ function App() {
     try {
       await copyText(EMAIL);
       setCopyStatus('copied');
-      copyTimer.current = window.setTimeout(() => setCopyStatus('idle'), 1800);
     } catch {
       setCopyStatus('error');
+    } finally {
+      copyTimer.current = window.setTimeout(() => setCopyStatus('idle'), 2000);
     }
   };
 
@@ -125,16 +126,12 @@ function App() {
               Based in the Bay Area. Building useful software, from
               student schedules to personal assistants.
             </p>
-            <a className="scroll-cue" href="#work">
-              <span>Selected work</span>
-              <span className="scroll-cue__line" aria-hidden="true" />
-            </a>
           </div>
         </section>
 
         <section className="work section-shell" id="work" aria-labelledby="work-title">
           <div className="section-heading">
-            <h2 className="section-title" id="work-title">Selected work</h2>
+            <h2 className="section-title" id="work-title">Things I’ve Built</h2>
           </div>
           <div className="project-list">
             {PROJECTS.filter((project) => project.featured).map((project) => (
@@ -184,11 +181,10 @@ function App() {
             />
             <div className="about__body">
               <p className="about__lead">
-                I like turning a messy problem into something useful.
+                I’m currently studying computer science at Chapman University.
               </p>
               <p className="about__description">
-                I’m currently studying computer science at Chapman University. These days,
-                I’m exploring personal assistants, everyday planning tools,
+                These days, I’m exploring personal assistants, everyday planning tools,
                 and what tennis data can tell us about the next match.
               </p>
             </div>
@@ -197,16 +193,12 @@ function App() {
 
         <section className="contact section-shell" id="contact" aria-labelledby="contact-title">
           <h2 id="contact-title">Let’s talk.</h2>
-          <p className="contact__intro">A project, an interesting problem, or just a hello.</p>
           <div className="email-row">
             <a href={`mailto:${EMAIL}`}>{EMAIL}<span aria-hidden="true"> ↗</span></a>
-            <button className="email-button" type="button" onClick={copyEmail} aria-label="Copy email address">
-              {copyStatus === 'copied' ? 'Copied' : 'Copy email'}
+            <button className="email-button" type="button" onClick={copyEmail} aria-live="polite" aria-atomic="true">
+              {copyStatus === 'copied' ? 'Copied!' : copyStatus === 'error' ? 'Couldn’t copy' : 'Copy email'}
             </button>
           </div>
-          <p className="copy-status" role="status" aria-live="polite">
-            {copyStatus === 'copied' ? 'Email address copied.' : copyStatus === 'error' ? 'Couldn’t copy. Select the address or use the email link.' : ''}
-          </p>
           <footer className="contact__footer">
             <div className="social-links">
               {SOCIALS.map((social) => (

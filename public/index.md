@@ -8,7 +8,7 @@ content_signal: ai-train=no, search=yes, ai-input=yes
 
 Product engineer based in the Bay Area. Building useful software, from student schedules to personal assistants.
 
-## Selected work
+## Things I’ve Built
 
 ### August
 
@@ -46,7 +46,7 @@ Predicting tennis outcomes from player stats and surface-specific Elo ratings.
 
 ## About
 
-I like turning a messy problem into something useful. I’m currently studying computer science at Chapman University. These days, I’m exploring personal assistants, everyday planning tools, and what tennis data can tell us about the next match.
+I’m currently studying computer science at Chapman University. These days, I’m exploring personal assistants, everyday planning tools, and what tennis data can tell us about the next match.
 
 ## Contact
 

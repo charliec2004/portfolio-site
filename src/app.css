@@ -298,28 +298,6 @@ p {
   text-wrap: pretty;
 }
 
-.scroll-cue {
-  justify-self: end;
-  width: min(280px, 100%);
-  display: flex;
-  align-items: center;
-  gap: 18px;
-  font-size: 13px;
-}
-
-.scroll-cue__line {
-  height: 1px;
-  flex: 1;
-  background: var(--line-strong);
-  transform: scaleX(0.6);
-  transform-origin: right;
-  transition: transform 320ms cubic-bezier(.2, .8, .2, 1);
-}
-
-.scroll-cue:hover .scroll-cue__line {
-  transform: scaleX(1);
-}
-
 /* Sections ----------------------------------------------------------- */
 
 .work,
@@ -903,10 +881,6 @@ a:hover > .external-arrow {
     width: 100%;
   }
 
-  .scroll-cue {
-    width: 100%;
-  }
-
   .project {
     gap: 28px;
   }
@@ -970,17 +944,15 @@ section[id] { scroll-margin-top: 28px; }
 .more-work h4 { font-size: 20px; font-weight: 500; margin: 0 0 10px; }
 .more-work p, .about__description { color: var(--ink-muted); font-size: 16px; line-height: 1.55; max-width: 530px; }
 .about__description { margin-top: 24px; }
-.contact__intro { color: var(--ink-muted); font-size: 16px; line-height: 1.5; margin-bottom: 16px; }
 .email-row { display: flex; align-items: center; justify-content: space-between; gap: 20px; padding: 12px 0; }
 .email-row > a { font-size: clamp(16px, 2.2vw, 28px); letter-spacing: -.035em; overflow-wrap: anywhere; }
-.email-button { flex-shrink: 0; font-size: 12px; background: transparent; border: 0; padding: 10px 0 10px 14px; text-decoration: underline; text-underline-offset: 4px; }
-.copy-status { min-height: 24px; font-size: 12px; padding-top: 6px; }
+.email-button { flex-shrink: 0; min-width: 100px; text-align: right; font-size: 12px; background: transparent; border: 0; padding: 10px 0 10px 14px; text-decoration: underline; text-underline-offset: 4px; }
 @media (max-width: 720px) {
   .more-work__grid { grid-template-columns: 1fr; gap: 28px; }
   .portrait { width: min(62%, 240px); }
   .email-row { align-items: flex-start; flex-direction: column; gap: 8px; }
   .email-row > a { font-size: 22px; }
-  .email-button { padding-left: 0; }
+  .email-button { padding-left: 0; text-align: left; }
   .contact__footer { gap: 24px; padding-top: 18px; }
 }
 

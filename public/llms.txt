@@ -10,7 +10,7 @@ This is Charles Conner's personal portfolio. Use the Markdown representation for
 - [Full site context](https://charlieconner.com/llms-full.txt): Full Markdown context for language models and AI agents.
 - [Human-facing portfolio](https://charlieconner.com/): Interactive visual version of the portfolio.
 
-## Selected work
+## Things I’ve Built
 
 - [August](https://tryaugust.app): Personal assistant you text that follows through on loose ends, follow-ups, and deadlines across your apps and the web.
 - [Quorum](https://tryquorum.app): Degree-planning platform that maps catalog requirements across semesters.
