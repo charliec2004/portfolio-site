@@ -1,6 +1,4 @@
 import { useEffect, useRef, useState } from 'react';
-import portrait from './assets/images/charlie-clean.jpg';
-import Cursor from './components/Cursor';
 import ExternalLink from './components/ExternalLink';
 import PointWaveField from './components/PointWaveField';
 import ProjectVisual from './components/ProjectVisual';
@@ -44,8 +42,33 @@ function App() {
   const [copied, setCopied] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const copyTimer = useRef(null);
+  const menuToggle = useRef(null);
 
   useEffect(() => () => window.clearTimeout(copyTimer.current), []);
+
+  useEffect(() => {
+    if (!menuOpen) return undefined;
+
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    const onKeyDown = (event) => {
+      if (event.key === 'Escape') {
+        setMenuOpen(false);
+        menuToggle.current?.focus();
+      }
+    };
+    const onResize = () => {
+      if (window.innerWidth > 720) setMenuOpen(false);
+    };
+
+    document.addEventListener('keydown', onKeyDown);
+    window.addEventListener('resize', onResize);
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      document.removeEventListener('keydown', onKeyDown);
+      window.removeEventListener('resize', onResize);
+    };
+  }, [menuOpen]);
 
   const copyEmail = async () => {
     await copyText(EMAIL);
@@ -58,12 +81,11 @@ function App() {
 
   return (
     <>
-      <Cursor />
-
       <header className="site-header">
         <a className="wordmark" href="/">Charles Conner</a>
 
         <button
+          ref={menuToggle}
           className="menu-toggle"
           type="button"
           aria-label={menuOpen ? 'Close menu' : 'Open menu'}
@@ -83,14 +105,14 @@ function App() {
           className="theme-toggle"
           type="button"
           onClick={toggleTheme}
-          aria-label={`Switch to ${theme === 'light' ? 'dark' : 'light'} mode`}
+          aria-label="Toggle color theme"
         >
           <span className="theme-toggle__icon" aria-hidden="true" />
-          <span>{theme === 'light' ? 'Dark' : 'Light'}</span>
+          <span>Theme</span>
         </button>
       </header>
 
-      <main>
+      <main inert={menuOpen}>
         <section className="hero section-shell" aria-labelledby="hero-title">
           <PointWaveField theme={theme} />
           <h1 id="hero-title">
@@ -146,7 +168,15 @@ function App() {
           <h2 className="section-title" id="about-title">About</h2>
 
           <div className="about__grid">
-            <img className="portrait" src={portrait} alt="Charles Conner" />
+            <img
+              className="portrait"
+              src="/charles-conner.webp"
+              alt="Charles Conner"
+              width="900"
+              height="1117"
+              loading="lazy"
+              decoding="async"
+            />
             <div className="about__body">
               <p className="about__lead">
                 I work across product and engineering, from early decisions
@@ -188,7 +218,7 @@ function App() {
                 <ExternalLink href={social.href} key={social.label}>{social.label}</ExternalLink>
               ))}
             </div>
-            <p>© {new Date().getFullYear()} Charles Conner</p>
+            <p>© Charles Conner</p>
           </footer>
         </section>
       </main>

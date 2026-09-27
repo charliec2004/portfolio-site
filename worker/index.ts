@@ -16,7 +16,7 @@ const SECURITY_HEADERS = {
     "frame-ancestors 'none'",
     "img-src 'self' data:",
     "object-src 'none'",
-    "script-src 'self' 'sha256-+VR5tME3K6xlz48uRWxNfV/pBRk5HX0gIqQ2w2JuHEw='",
+    "script-src 'self' https://static.cloudflareinsights.com/beacon.min.js 'sha256-+VR5tME3K6xlz48uRWxNfV/pBRk5HX0gIqQ2w2JuHEw='",
     "style-src 'self' 'unsafe-inline'",
     'upgrade-insecure-requests',
   ].join('; '),
@@ -79,6 +79,21 @@ function addSharedHeaders(response: Response): Response {
   return outgoing;
 }
 
+const HASHED_ASSET = /^\/assets\/[^/]+-[\w-]{8,}\.[a-z0-9]+$/i;
+
+function setBrowserCache(response: Response, path: string): Response {
+  if (!response.ok) return response;
+
+  const contentType = response.headers.get('Content-Type') || '';
+  if (HASHED_ASSET.test(path) && !contentType.includes('text/html')) {
+    response.headers.set('Cache-Control', 'public, max-age=31536000, immutable');
+  } else if (contentType.includes('text/html')) {
+    response.headers.set('Cache-Control', 'no-cache');
+  }
+
+  return response;
+}
+
 async function markdownResponse(request: Request, env: Env): Promise<Response> {
   const markdownUrl = new URL('/llms-full.txt', request.url);
   const assetResponse = await env.ASSETS.fetch(new Request(markdownUrl, { method: 'GET' }));
@@ -121,7 +136,10 @@ export default {
         return addSharedHeaders(await markdownResponse(request, env));
       }
 
-      return addSharedHeaders(await env.ASSETS.fetch(request));
+      return setBrowserCache(
+        addSharedHeaders(await env.ASSETS.fetch(request)),
+        url.pathname,
+      );
     } catch (error) {
       console.error(JSON.stringify({
         message: 'request failed',

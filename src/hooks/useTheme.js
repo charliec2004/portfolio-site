@@ -4,6 +4,7 @@ const STORAGE_KEY = 'portfolio-theme';
 const THEME_COLOR = { light: '#f4f4f0', dark: '#0a0a0a' };
 
 function getInitialTheme() {
+  if (typeof window === 'undefined') return 'light';
   try {
     const saved = window.localStorage.getItem(STORAGE_KEY);
     if (saved === 'light' || saved === 'dark') return saved;
