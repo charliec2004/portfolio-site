@@ -10,15 +10,6 @@ Product engineer based in the Bay Area. Building useful software, from student s
 
 ## Selected work
 
-### Semester Scheduler
-
-Used across multiple departments at Chapman University.
-
-Student-worker shifts, built around availability and department needs.
-
-- URL: https://github.com/charliec2004/semester-scheduler-app
-- Technologies: Python, OR-Tools, Electron, React
-
 ### August
 
 A personal assistant you can text.
@@ -30,10 +21,21 @@ Hand off the follow-ups, deadlines, and loose ends on your mind.
 
 ### Quorum
 
-A clearer path through your degree, semester by semester.
+A clearer path through your degree.
+
+Plan your requirements, semester by semester.
 
 - URL: https://tryquorum.app
 - Technologies: React, TypeScript, Next.js
+
+## More things I’ve made
+
+### Semester Scheduler
+
+Student-worker scheduling used across multiple departments at Chapman University.
+
+- URL: https://github.com/charliec2004/semester-scheduler-app
+- Technologies: Python, OR-Tools, Electron, React
 
 ### Tennis Match Predictor
 

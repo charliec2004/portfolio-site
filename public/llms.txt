@@ -12,9 +12,12 @@ This is Charles Conner's personal portfolio. Use the Markdown representation for
 
 ## Selected work
 
-- [Semester Scheduler](https://github.com/charliec2004/semester-scheduler-app): Student-worker scheduling software used across multiple departments at Chapman University.
 - [August](https://tryaugust.app): Personal assistant you text that follows through on loose ends, follow-ups, and deadlines across your apps and the web.
 - [Quorum](https://tryquorum.app): Degree-planning platform that maps catalog requirements across semesters.
+
+## More things I’ve made
+
+- [Semester Scheduler](https://github.com/charliec2004/semester-scheduler-app): Student-worker scheduling software used across multiple departments at Chapman University.
 - [Tennis Match Predictor](https://github.com/charliec2004/ML-Tennis-Match-Predictor): Machine-learning project predicting professional tennis outcomes.
 
 ## Profiles and contact
