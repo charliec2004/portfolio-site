@@ -215,7 +215,6 @@ export default function PointWaveField({ theme }) {
 
     const draw = (now = performance.now()) => {
       animationFrame = null;
-      resize();
 
       pointer.currentX += (pointer.targetX - pointer.currentX) * 0.08;
       pointer.currentY += (pointer.targetY - pointer.currentY) * 0.08;
@@ -236,13 +235,13 @@ export default function PointWaveField({ theme }) {
     };
 
     const requestDraw = () => {
-      if (animationFrame === null) {
+      if (isIntersecting && isDocumentVisible && animationFrame === null) {
         animationFrame = window.requestAnimationFrame(draw);
       }
     };
 
     const onPointerMove = (event) => {
-      if (!finePointer.matches) return;
+      if (!finePointer.matches || !isIntersecting || !isDocumentVisible) return;
 
       const rect = canvas.getBoundingClientRect();
       const inside = (
@@ -277,14 +276,18 @@ export default function PointWaveField({ theme }) {
     };
 
     const onMotionChange = () => requestDraw();
+    const onResize = () => {
+      resize();
+      requestDraw();
+    };
     const resizeObserver = typeof ResizeObserver === 'function'
-      ? new ResizeObserver(requestDraw)
+      ? new ResizeObserver(onResize)
       : null;
     const intersectionObserver = typeof IntersectionObserver === 'function'
       ? new IntersectionObserver(([entry]) => {
         isIntersecting = entry.isIntersecting;
         if (isIntersecting) {
-          requestDraw();
+          onResize();
         } else if (animationFrame !== null) {
           window.cancelAnimationFrame(animationFrame);
           animationFrame = null;
@@ -295,7 +298,7 @@ export default function PointWaveField({ theme }) {
     resizeObserver?.observe(canvas);
     intersectionObserver?.observe(canvas);
     window.addEventListener('pointermove', onPointerMove, { passive: true });
-    window.addEventListener('resize', requestDraw, { passive: true });
+    window.addEventListener('resize', onResize, { passive: true });
     document.documentElement.addEventListener('mouseleave', onPointerLeave);
     document.addEventListener('visibilitychange', onVisibilityChange);
     if (typeof reducedMotion.addEventListener === 'function') {
@@ -305,6 +308,7 @@ export default function PointWaveField({ theme }) {
     }
 
     updateColor();
+    resize();
     requestDraw();
 
     return () => {
@@ -312,7 +316,7 @@ export default function PointWaveField({ theme }) {
       resizeObserver?.disconnect();
       intersectionObserver?.disconnect();
       window.removeEventListener('pointermove', onPointerMove);
-      window.removeEventListener('resize', requestDraw);
+      window.removeEventListener('resize', onResize);
       document.documentElement.removeEventListener('mouseleave', onPointerLeave);
       document.removeEventListener('visibilitychange', onVisibilityChange);
       if (typeof reducedMotion.removeEventListener === 'function') {
