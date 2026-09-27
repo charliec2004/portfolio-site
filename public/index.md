@@ -44,7 +44,7 @@ Predicting tennis outcomes from player stats and surface-specific Elo ratings.
 
 ## About
 
-I like turning a messy problem into something useful. I studied computer science at Chapman University. These days, I’m exploring personal assistants, everyday planning tools, and what tennis data can tell us about the next match.
+I like turning a messy problem into something useful. I’m currently studying computer science at Chapman University. These days, I’m exploring personal assistants, everyday planning tools, and what tennis data can tell us about the next match.
 
 ## Contact
 

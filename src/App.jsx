@@ -187,7 +187,7 @@ function App() {
                 I like turning a messy problem into something useful.
               </p>
               <p className="about__description">
-                I studied computer science at Chapman University. These days,
+                I’m currently studying computer science at Chapman University. These days,
                 I’m exploring personal assistants, everyday planning tools,
                 and what tennis data can tell us about the next match.
               </p>

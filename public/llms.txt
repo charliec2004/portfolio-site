@@ -1,6 +1,6 @@
 # Charles Conner
 
-> Charles Conner is a Bay Area product engineer building tools for everyday planning, personal assistants, and other explorations.
+> Charles Conner is a Bay Area product engineer building tools for everyday planning, personal assistants, and other explorations. He is currently studying computer science at Chapman University.
 
 This is Charles Conner's personal portfolio. Use the Markdown representation for concise biographical information, selected projects, technical practice, contact details, and canonical profile links.
 
