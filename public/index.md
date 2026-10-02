@@ -6,7 +6,7 @@ content_signal: ai-train=no, search=yes, ai-input=yes
 
 # Charles Conner
 
-Product engineer based in the Bay Area. Building useful software, from student schedules to personal assistants.
+Product engineer based in the Bay Area. Building useful software.
 
 ## Things I’ve Built
 

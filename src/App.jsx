@@ -123,8 +123,7 @@ function App() {
           </h1>
           <div className="hero__bottom">
             <p>
-              Based in the Bay Area. Building useful software, from
-              student schedules to personal assistants.
+              Based in the Bay Area. Building useful software.
             </p>
           </div>
         </section>
