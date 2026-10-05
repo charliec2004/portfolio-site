@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import Cursor from './components/Cursor';
 import ProjectVisual from './components/ProjectVisual';
 import ExternalLink from './components/ExternalLink';
+import ContributionIsland from './components/ContributionIsland';
 import PointWaveField from './components/PointWaveField';
 import { PROJECTS } from './data/projects';
 import useTheme from './hooks/useTheme';
@@ -10,8 +11,8 @@ const EMAIL = 'charlieconner04@gmail.com';
 
 const SOCIALS = [
   { label: 'GitHub', href: 'https://github.com/charliec2004' },
-  { label: 'LinkedIn', href: 'https://www.linkedin.com/in/charlescon' },
   { label: 'X', href: 'https://x.com/charliee_' },
+  { label: 'LinkedIn', href: 'https://www.linkedin.com/in/charlescon' },
 ];
 
 
@@ -182,10 +183,7 @@ function App() {
               <p className="about__lead">
                 I’m currently studying computer science at Chapman University.
               </p>
-              <p className="about__description">
-                These days, I’m exploring personal assistants, everyday planning tools,
-                and what tennis data can tell us about the next match.
-              </p>
+              <ContributionIsland />
             </div>
           </div>
         </section>

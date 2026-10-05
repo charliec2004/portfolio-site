@@ -46,11 +46,11 @@ Predicting tennis outcomes from player stats and surface-specific Elo ratings.
 
 ## About
 
-I’m currently studying computer science at Chapman University. These days, I’m exploring personal assistants, everyday planning tools, and what tennis data can tell us about the next match.
+I’m currently studying computer science at Chapman University.
 
 ## Contact
 
 - Email: [charlieconner04@gmail.com](mailto:charlieconner04@gmail.com)
 - GitHub: https://github.com/charliec2004
-- LinkedIn: https://www.linkedin.com/in/charlescon
 - X: https://x.com/charliee_
+- LinkedIn: https://www.linkedin.com/in/charlescon

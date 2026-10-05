@@ -16,7 +16,7 @@ const SECURITY_HEADERS = {
     "frame-ancestors 'none'",
     "img-src 'self' data:",
     "object-src 'none'",
-    "script-src 'self' https://static.cloudflareinsights.com/beacon.min.js https://static.cloudflareinsights.com/beacon.min.js/ 'sha256-Ia9R/A22joWQnzA609Bt/1a5288fJijJfkNWaC3hOm0='",
+    "script-src 'self' https://static.cloudflareinsights.com/beacon.min.js https://static.cloudflareinsights.com/beacon.min.js/ 'sha256-Ia9R/A22joWQnzA609Bt/1a5288fJijJfkNWaC3hOm0=' 'sha256-5/XHsAXrpTkzg8+EKioIp412Qe+wGGq8tS0o9sQVZ9E='",
     "style-src 'self' 'unsafe-inline'",
     'upgrade-insecure-requests',
   ].join('; '),
@@ -80,6 +80,7 @@ function addSharedHeaders(response: Response): Response {
 }
 
 const HASHED_ASSET = /^\/assets\/[^/]+-[\w-]{8,}\.[a-z0-9]+$/i;
+const PUBLIC_IMAGE = /\.(?:png|webp|jpe?g|svg|ico)$/i;
 
 function setBrowserCache(response: Response, path: string): Response {
   if (!response.ok) return response;
@@ -89,6 +90,10 @@ function setBrowserCache(response: Response, path: string): Response {
     response.headers.set('Cache-Control', 'public, max-age=31536000, immutable');
   } else if (contentType.includes('text/html')) {
     response.headers.set('Cache-Control', 'no-cache');
+  } else if (PUBLIC_IMAGE.test(path)) {
+    // Unhashed images (portrait, favicon, og.png) change rarely; let browsers
+    // reuse them for a day and refresh quietly after that.
+    response.headers.set('Cache-Control', 'public, max-age=86400, stale-while-revalidate=604800');
   }
 
   return response;

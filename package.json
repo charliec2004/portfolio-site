@@ -5,13 +5,14 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build && node scripts/prerender.mjs",
+    "build": "node scripts/fetch-contributions.mjs && vite build && node scripts/prerender.mjs",
     "preview": "vite preview",
     "lint": "eslint \"src/**/*.{js,jsx}\"",
     "types:worker": "wrangler types",
     "check:worker": "tsc --project tsconfig.worker.json",
     "deploy:cloudflare:dry": "npm run build && wrangler deploy --dry-run",
-    "deploy:cloudflare": "npm run build && wrangler deploy"
+    "deploy:cloudflare": "npm run build && wrangler deploy",
+    "og": "node scripts/render-og.mjs"
   },
   "repository": {
     "type": "git",
