@@ -16,7 +16,7 @@ concurrency:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ${{ vars.THINKPAD_CI_ENABLED == 'true' && github.actor == 'charliec2004' && (github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository) && fromJSON('["self-hosted","linux","x64","thinkpad-ci"]') || fromJSON('["ubuntu-latest"]') }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -31,7 +31,7 @@ jobs:
 
   deploy:
     needs: build
-    runs-on: ubuntu-latest
+    runs-on: ${{ vars.THINKPAD_CI_ENABLED == 'true' && github.actor == 'charliec2004' && (github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository) && fromJSON('["self-hosted","linux","x64","thinkpad-ci"]') || fromJSON('["ubuntu-latest"]') }}
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
