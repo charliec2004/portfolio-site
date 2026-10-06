@@ -1,0 +1,46 @@
+name: ThinkPad runner smoke test
+
+on:
+  push:
+    branches: [ci/thinkpad-runner]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  smoke:
+    runs-on: ${{ vars.THINKPAD_CI_ENABLED == 'true' && github.actor == 'charliec2004' && (github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository) && fromJSON('["self-hosted","linux","x64","thinkpad-ci"]') || fromJSON('["ubuntu-latest"]') }}
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: '20'
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Verify disposable ThinkPad environment
+        run: |
+          set -euo pipefail
+          test "${RUNNER_NAME#thinkpad-}" != "$RUNNER_NAME"
+          test -f /etc/thinkpad-ci-vm
+          test "$(systemd-detect-virt --vm)" = kvm
+          docker info --format '{{.ServerVersion}}'
+          docker run --rm hello-world
+          sudo unshare --mount --net true
+          test ! -e /home/charlie
+          node --version
+          python --version
+          python -m pip --version
+          corepack enable
+          corepack --version
+          gh --version
+          xvfb-run --auto-servernum sh -c 'test -n "$DISPLAY"'
+          echo 'ThinkPad runner checkout and tool setup passed.' >> "$GITHUB_STEP_SUMMARY"
+      - name: Verify portfolio delivery checks
+        run: |
+          npm ci
+          npm run lint
+          npm run check:worker
+          npm run deploy:cloudflare:dry
