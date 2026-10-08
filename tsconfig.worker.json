@@ -1,6 +1,8 @@
 {
   "compilerOptions": {
-    "allowJs": false,
+    "allowJs": true,
+    "checkJs": true,
+    "resolveJsonModule": true,
     "lib": ["ES2023"],
     "module": "ESNext",
     "moduleResolution": "Bundler",

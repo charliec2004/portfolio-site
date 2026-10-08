@@ -1,11 +1,17 @@
 {
   "$schema": "./node_modules/wrangler/config-schema.json",
   "name": "charles-conner-portfolio",
+  "account_id": "37406abccb4f353650251e2141df9b38",
   "main": "./worker/index.ts",
   "compatibility_date": "2026-07-27",
   "compatibility_flags": ["nodejs_compat"],
   "workers_dev": true,
   "preview_urls": false,
+  "triggers": {
+    "crons": [
+      "*/15 * * * *"
+    ]
+  },
   "routes": [
     {
       "pattern": "charlieconner.com",
@@ -32,5 +38,11 @@
       "enabled": true,
       "head_sampling_rate": 0.01
     }
-  }
+  },
+  "kv_namespaces": [
+    {
+      "binding": "CONTRIBUTIONS",
+      "id": "85f2246800f543429b70d2e03ceabf77"
+    }
+  ]
 }

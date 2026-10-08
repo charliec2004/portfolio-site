@@ -1,3 +1,5 @@
+import { contributionResponse, refreshContributions, updateContributionHTML } from './contributions';
+
 const AGENT_LINKS = [
   '</llms.txt>; rel="describedby"; type="text/plain"',
   '</index.md>; rel="alternate describedby"; type="text/markdown"',
@@ -129,6 +131,10 @@ async function markdownResponse(request: Request, env: Env): Promise<Response> {
 }
 
 export default {
+  async scheduled(_controller, env): Promise<void> {
+    await refreshContributions(env);
+  },
+
   async fetch(request, env): Promise<Response> {
     const url = new URL(request.url);
     const canReturnRepresentation = request.method === 'GET' || request.method === 'HEAD';
@@ -137,12 +143,27 @@ export default {
       && prefersMarkdown(request.headers.get('Accept'));
 
     try {
+      if (url.pathname === '/api/contributions') {
+        return addSharedHeaders(await contributionResponse(request, env));
+      }
       if (canReturnRepresentation && (explicitMarkdownPath || negotiatedMarkdown)) {
         return addSharedHeaders(await markdownResponse(request, env));
       }
 
+      // Ignore static asset validators for HTML whose graph changes between builds.
+      const assetRequest = new Request(request);
+      if (canReturnRepresentation && !HASHED_ASSET.test(url.pathname) && !PUBLIC_IMAGE.test(url.pathname)) {
+        assetRequest.headers.delete('If-None-Match');
+        assetRequest.headers.delete('If-Modified-Since');
+      }
+      let response = await env.ASSETS.fetch(assetRequest);
+      if (request.method === 'GET') response = await updateContributionHTML(response, env);
+      if (request.method === 'HEAD' && response.headers.get('Content-Type')?.includes('text/html')) {
+        response = new Response(null, response);
+        for (const name of ['ETag', 'Last-Modified', 'Content-Length']) response.headers.delete(name);
+      }
       return setBrowserCache(
-        addSharedHeaders(await env.ASSETS.fetch(request)),
+        addSharedHeaders(response),
         url.pathname,
       );
     } catch (error) {

@@ -9,6 +9,10 @@
 - `worker/index.ts` serves those built assets through `env.ASSETS`, applies
   security/cache headers, and serves Markdown for `/index.md` or homepage
   requests that prefer `Accept: text/markdown`.
+- The contribution graph refreshes through the Worker's 15-minute Cron Trigger.
+  `CONTRIBUTIONS` KV holds the last valid snapshot without expiry; the Worker
+  inserts it into page HTML and serves `/api/contributions` for browser refreshes.
+  Keep the build-time fallback for storage outages and the GitHub Pages host.
 - The Worker was introduced on July 27, 2026 in commit `8a0729b` for
   agent-readable delivery and security headers. Commit `446b533` attached the
   custom domains. This is a static portfolio with a delivery layer, not an

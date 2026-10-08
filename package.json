@@ -8,6 +8,7 @@
     "build": "node scripts/fetch-contributions.mjs && vite build && node scripts/prerender.mjs",
     "preview": "vite preview",
     "lint": "eslint \"src/**/*.{js,jsx}\"",
+    "test": "node --test tests/*.test.mjs",
     "types:worker": "wrangler types",
     "check:worker": "tsc --project tsconfig.worker.json",
     "deploy:cloudflare:dry": "npm run build && wrangler deploy --dry-run",
