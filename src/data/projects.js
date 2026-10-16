@@ -1,5 +1,14 @@
 export const PROJECTS = [
   {
+    name: 'Harbor',
+    visual: 'harbor',
+    featured: true,
+    url: 'https://tryharbor.dev',
+    outcome: 'One MCP server for every tool your team uses.',
+    description: 'And a place for everything your agents build.',
+    tech: ['TypeScript', 'Node.js', 'MCP'],
+  },
+  {
     name: 'August',
     visual: 'august',
     featured: true,
