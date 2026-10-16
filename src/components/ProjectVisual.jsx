@@ -1,4 +1,6 @@
 const TERMS = ['Fall 2025', 'Spring 2026', 'Fall 2026', 'Spring 2027'];
+const AGENTS = ['Claude', 'ChatGPT', 'Cursor', 'Codex'];
+const RESOURCES = ['Tools', 'Skills', 'Apps', 'Files', 'Browsers', 'Computers'];
 const FILLED_CELLS = new Set([3, 6, 8, 13, 16, 17, 22, 26, 31]);
 
 /**
@@ -6,6 +8,25 @@ const FILLED_CELLS = new Set([3, 6, 8, 13, 16, 17, 22, 26, 31]);
  * are taken from the project's own README.
  */
 export default function ProjectVisual({ kind }) {
+  if (kind === 'harbor') {
+    return (
+      <div className="visual visual--harbor" aria-hidden="true">
+        <div className="hub">
+          <div className="hub__row">
+            {AGENTS.map((agent) => <span key={agent}>{agent}</span>)}
+          </div>
+          <div className="hub__core">
+            <span>Harbor</span>
+            <span>One MCP server</span>
+          </div>
+          <div className="hub__row">
+            {RESOURCES.map((resource) => <span key={resource}>{resource}</span>)}
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   if (kind === 'august') {
     return (
       <div className="visual visual--august" aria-hidden="true">

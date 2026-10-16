@@ -415,6 +415,71 @@ a:hover > .external-arrow {
   pointer-events: none;
 }
 
+/* Harbor: every agent and every tool meet at one server. */
+
+.visual--harbor {
+  display: grid;
+  place-items: center;
+}
+
+.hub {
+  display: flex;
+  flex-direction: column;
+  width: 82%;
+}
+
+.hub__row {
+  display: flex;
+  gap: clamp(6px, 0.8vw, 10px);
+}
+
+.hub__row span {
+  position: relative;
+  flex: 1;
+  padding: clamp(7px, 0.8vw, 11px) 4px;
+  border: 1px solid color-mix(in srgb, var(--inverse) 28%, transparent);
+  text-align: center;
+  white-space: nowrap;
+}
+
+/* A short connector drops from each label toward the shared server. */
+.hub__row span::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  width: 1px;
+  height: clamp(18px, 2.2vw, 32px);
+  background: color-mix(in srgb, var(--inverse) 28%, transparent);
+  transition: background 240ms ease;
+}
+
+.hub__row:first-child span::after { top: 100%; }
+.hub__row:last-child span::after { bottom: 100%; }
+
+.hub__core {
+  display: flex;
+  justify-content: space-between;
+  margin: clamp(18px, 2.2vw, 32px) 0;
+  padding: clamp(12px, 1.4vw, 20px);
+  background: var(--paper);
+  color: var(--ink);
+  box-shadow: 0 26px 80px rgba(0, 0, 0, .34);
+  font-size: clamp(12px, 1.1vw, 17px);
+  transition: transform 600ms cubic-bezier(.2, .8, .2, 1);
+}
+
+.hub__core span:last-child {
+  color: var(--ink-muted);
+}
+
+.project__visual-link:hover .hub__core {
+  transform: scale(1.03);
+}
+
+.project__visual-link:hover .hub__row span::after {
+  background: var(--inverse);
+}
+
 /* August: a text thread where a loose end gets handed off and closed. */
 
 .visual--august {
@@ -427,24 +492,24 @@ a:hover > .external-arrow {
 .thread {
   display: flex;
   flex-direction: column;
-  gap: clamp(10px, 1.2vw, 16px);
+  gap: clamp(8px, 0.9vw, 12px);
   width: 80%;
 }
 
 .thread__top {
   display: flex;
   justify-content: space-between;
-  margin-bottom: clamp(8px, 1vw, 14px);
-  padding-bottom: 14px;
+  margin-bottom: clamp(4px, 0.6vw, 8px);
+  padding-bottom: clamp(8px, 0.9vw, 12px);
   border-bottom: 1px solid var(--line-strong);
 }
 
 .thread__msg {
   max-width: 82%;
   margin: 0;
-  padding: clamp(11px, 1.3vw, 18px) clamp(14px, 1.6vw, 22px);
+  padding: clamp(8px, 0.9vw, 13px) clamp(12px, 1.3vw, 18px);
   border: 1px solid var(--line-strong);
-  font-size: clamp(12px, 1.1vw, 17px);
+  font-size: clamp(11px, 0.95vw, 14px);
   line-height: 1.45;
 }
 

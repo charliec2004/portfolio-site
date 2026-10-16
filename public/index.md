@@ -10,6 +10,15 @@ Product engineer based in the Bay Area. Building useful software.
 
 ## Things I’ve Built
 
+### Harbor
+
+One MCP server for every tool your team uses.
+
+And a place for everything your agents build.
+
+- URL: https://tryharbor.dev
+- Technologies: TypeScript, Node.js, MCP
+
 ### August
 
 A personal assistant you can text.
