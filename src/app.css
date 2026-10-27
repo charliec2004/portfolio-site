@@ -971,26 +971,39 @@ a:hover > .external-arrow {
     background: transparent;
   }
 
-  .menu-icon,
-  .menu-icon::after {
+  /* Both lines sit inside the icon box so the pair is centered in the button. */
+  .menu-icon {
+    position: relative;
     display: block;
     width: 18px;
+    height: 7px;
+  }
+
+  .menu-icon::before,
+  .menu-icon::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    width: 100%;
     height: 1px;
     background: var(--ink);
     transition: transform 220ms ease;
   }
 
-  .menu-icon::after {
-    content: "";
-    transform: translateY(5px);
+  .menu-icon::before {
+    top: 0;
   }
 
-  .menu-icon.is-open {
+  .menu-icon::after {
+    bottom: 0;
+  }
+
+  .menu-icon.is-open::before {
     transform: translateY(3px) rotate(45deg);
   }
 
   .menu-icon.is-open::after {
-    transform: rotate(-90deg);
+    transform: translateY(-3px) rotate(-45deg);
   }
 
   .site-nav {
