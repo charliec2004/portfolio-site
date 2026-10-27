@@ -4,8 +4,8 @@ export const PROJECTS = [
     visual: 'harbor',
     featured: true,
     url: 'https://tryharbor.dev',
-    outcome: 'One MCP server for every tool your team uses.',
-    description: 'And a place for everything your agents build.',
+    outcome: 'Where your company’s AI agents build and run internal apps.',
+    description: '',
     tech: ['TypeScript', 'Node.js', 'MCP'],
   },
   {
