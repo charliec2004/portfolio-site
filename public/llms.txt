@@ -12,7 +12,7 @@ This is Charles Conner's personal portfolio. Use the Markdown representation for
 
 ## Things I’ve Built
 
-- [Harbor](https://tryharbor.dev): One MCP server that connects every agent to a team's tools, and a place where the apps agents build run for the whole team.
+- [Harbor](https://tryharbor.dev): Where a company's AI agents build and run internal apps.
 - [August](https://tryaugust.app): Personal assistant you text that follows through on loose ends, follow-ups, and deadlines across your apps and the web.
 - [Quorum](https://tryquorum.app): Degree-planning platform that maps catalog requirements across semesters.
 

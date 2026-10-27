@@ -12,9 +12,7 @@ Product engineer based in the Bay Area. Building useful software.
 
 ### Harbor
 
-One MCP server for every tool your team uses.
-
-And a place for everything your agents build.
+Where your company’s AI agents build and run internal apps.
 
 - URL: https://tryharbor.dev
 - Technologies: TypeScript, Node.js, MCP
