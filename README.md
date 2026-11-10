@@ -20,31 +20,31 @@ KV is unavailable or empty, the bundled build-time snapshot remains available.
 Inspect `X-Contributions-Source` and `X-Contributions-Updated` on the homepage or
 API to verify storage and freshness; inspect Cron runs in Cloudflare observability
 for refresh failures. The public API is read-only and cannot trigger GitHub fetches.
-Local Worker verification uses `npx wrangler dev --test-scheduled`; invoke its
+Local Worker verification uses `pnpm exec wrangler dev --test-scheduled`; invoke its
 scheduled handler with `curl 'http://localhost:8787/__scheduled?cron=*/15+*+*+*+*'`.
 Local KV is isolated from production. GitHub Pages retains the build-time graph.
 
 ## Develop
 
 ```bash
-npm install
-npm run dev
+pnpm install
+pnpm run dev
 ```
 
 ## Check and build
 
 ```bash
-npm run lint          # ESLint over src/
-npm test              # Calendar and Worker runtime regression tests
-npm run check:worker  # TypeScript check for worker/
-npm run build         # Production build to dist/
+pnpm run lint          # ESLint over src/
+pnpm test              # Calendar and Worker runtime regression tests
+pnpm run check:worker  # TypeScript check for worker/
+pnpm run build         # Production build to dist/
 ```
 
 ## Deploy
 
 ```bash
-npm run deploy:cloudflare:dry   # Build and validate the Worker config
-npm run deploy:cloudflare       # Build and deploy with Wrangler
+pnpm run deploy:cloudflare:dry   # Build and validate the Worker config
+pnpm run deploy:cloudflare       # Build and deploy with Wrangler
 ```
 
 ## Structure

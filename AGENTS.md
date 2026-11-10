@@ -4,7 +4,7 @@
 
 - `https://charlieconner.com` and `https://www.charlieconner.com` are served by
   the Cloudflare Worker `charles-conner-portfolio`, configured in `wrangler.jsonc`.
-- The app is React + Vite. `npm run build` builds `dist/` and prerenders the
+- The app is React + Vite. `pnpm run build` builds `dist/` and prerenders the
   page with `scripts/prerender.mjs`; React hydrates interactive controls.
 - `worker/index.ts` serves those built assets through `env.ASSETS`, applies
   security/cache headers, and serves Markdown for `/index.md` or homepage
@@ -33,16 +33,16 @@ or remove either deployment path as incidental cleanup.
 ## Publishing changes
 
 1. Compare the final change with current `origin/main` and preserve merged work.
-2. For application or delivery changes, run `npm run lint`,
-   `npm run check:worker`, and `npm run deploy:cloudflare:dry`
+2. For application or delivery changes, run `pnpm run lint`,
+   `pnpm run check:worker`, and `pnpm run deploy:cloudflare:dry`
    (includes the production build). Documentation-only changes need no deployment.
 3. Push the approved changes to the repository. When publishing to production,
-   run `npm run deploy:cloudflare` from the verified revision.
+   run `pnpm run deploy:cloudflare` from the verified revision.
 4. Verify both custom domains, relevant interactions, and response headers.
    Check the live result rather than relying only on deployment success.
 
 Use the existing Cloudflare account containing this Worker. Multiple accounts
-are available; confirm authentication with `npx wrangler whoami` and the existing
+are available; confirm authentication with `pnpm exec wrangler whoami` and the existing
 Worker before deployment. Never create a replacement Worker in another account
 to work around account selection or authentication errors.
 
